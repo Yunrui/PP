@@ -2,12 +2,19 @@
     x:Class="PP.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:PP"
+    xmlns:local="using:CoverFlowDemo"
+    xmlns:controls="using:CoverFlowControl"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
-
+    <Grid Background="White">
+        <controls:CoverFlow x:Name="CoverFlowControl" Height="400">
+            <controls:CoverFlow.ItemTemplate>
+                <DataTemplate>
+                    <Image Source="{Binding}" Height="400" />
+                </DataTemplate>
+            </controls:CoverFlow.ItemTemplate>
+        </controls:CoverFlow>
     </Grid>
 </Page>
