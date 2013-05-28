@@ -5,6 +5,7 @@ using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Input;
 using Windows.UI.Input.Inking;
@@ -14,6 +15,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
 
@@ -24,12 +26,18 @@ namespace PP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
+    /// <remarks>
+    /// $TODO: we need
+    /// - Move items
+    /// - resize items
+    /// - layers
+    /// </remarks>
     public sealed partial class DrawingPage : Page
     {
-        InkManager _inkManager = new Windows.UI.Input.Inking.InkManager();
-        private uint _penID;
-        private uint _touchID;
-        private Point _previousContactPt;
+        InkManager inkManager = new Windows.UI.Input.Inking.InkManager();
+        private uint penID;
+        private uint touchID;
+        private Point previousContactPt;
         private Point currentContactPt;
         private double x1;
         private double y1;
@@ -58,21 +66,21 @@ namespace PP
 
         public void InkCanvas_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            if (e.Pointer.PointerId == _penID)
+            if (e.Pointer.PointerId == penID)
             {
                 Windows.UI.Input.PointerPoint pt = e.GetCurrentPoint(panelcanvas);
 
                 // Pass the pointer information to the InkManager.  
-                _inkManager.ProcessPointerUp(pt);
+                inkManager.ProcessPointerUp(pt);
             }
 
-            else if (e.Pointer.PointerId == _touchID)
+            else if (e.Pointer.PointerId == touchID)
             {
                 // Process touch input 
             }
 
-            _touchID = 0;
-            _penID = 0;
+            this.touchID = 0;
+            this.penID = 0;
 
             // Call an application-defined function to render the ink strokes. 
 
@@ -84,7 +92,7 @@ namespace PP
         private void InkCanvas_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
 
-            if (e.Pointer.PointerId == _penID)
+            if (e.Pointer.PointerId == this.penID)
             {
                 PointerPoint pt = e.GetCurrentPoint(panelcanvas);
 
@@ -93,8 +101,8 @@ namespace PP
                 // whether the pointer has moved far enough to justify  
                 // drawing a new line. 
                 currentContactPt = pt.Position;
-                x1 = _previousContactPt.X;
-                y1 = _previousContactPt.Y;
+                x1 = previousContactPt.X;
+                y1 = previousContactPt.Y;
                 x2 = currentContactPt.X;
                 y2 = currentContactPt.Y;
 
@@ -110,18 +118,18 @@ namespace PP
                         Stroke = new SolidColorBrush(Colors.Green)
                     };
 
-                    _previousContactPt = currentContactPt;
+                    previousContactPt = currentContactPt;
 
                     // Draw the line on the canvas by adding the Line object as 
                     // a child of the Canvas object. 
                     panelcanvas.Children.Add(line);
 
                     // Pass the pointer information to the InkManager. 
-                    _inkManager.ProcessPointerUpdate(pt);
+                    inkManager.ProcessPointerUpdate(pt);
                 }
             }
 
-            else if (e.Pointer.PointerId == _touchID)
+            else if (e.Pointer.PointerId == touchID)
             {
                 // Process touch input 
             }
@@ -141,7 +149,7 @@ namespace PP
         {
             // Get information about the pointer location. 
             PointerPoint pt = e.GetCurrentPoint(panelcanvas);
-            _previousContactPt = pt.Position;
+            previousContactPt = pt.Position;
 
             // Accept input only from a pen or mouse with the left button pressed.  
             PointerDeviceType pointerDevType = e.Pointer.PointerDeviceType;
@@ -150,11 +158,46 @@ namespace PP
                     pt.Properties.IsLeftButtonPressed)
             {
                 // Pass the pointer information to the InkManager. 
-                _inkManager.ProcessPointerDown(pt);
-                _penID = pt.PointerId;
+                inkManager.ProcessPointerDown(pt);
+                penID = pt.PointerId;
 
                 e.Handled = true;
             }
+        }
+
+        private void panelcanvas_Drop(object sender, DragEventArgs e)
+        {
+            Uri uri = (Uri) e.Data.Properties["SelectedComponent"];
+
+            Point point = e.GetPosition(this.panelcanvas);
+
+            Rectangle blueRectangle = new Rectangle();
+            
+            blueRectangle.Height = 200;
+            blueRectangle.Width = 200;
+            Canvas.SetTop(blueRectangle, point.Y);
+            Canvas.SetLeft(blueRectangle, point.X);
+            ImageBrush imgBrush = new ImageBrush();
+            imgBrush.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(uri);
+            blueRectangle.Fill = imgBrush;
+            panelcanvas.Children.Add(blueRectangle);
+
+            blueRectangle.Tapped += new TappedEventHandler(panelcanvas_Tapped);
+        }
+
+        private void toolbox_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
+        {        
+            IList<IStorageItem> selectedFiles = new List<IStorageItem>();
+
+            if (e.Items != null && e.Items.Count > 0)
+            {
+                e.Data.Properties.Add("SelectedComponent", ((BitmapImage)((Image)e.Items[0]).Source).UriSource);
+            }
+        }
+
+        private void panelcanvas_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
         }
     }
 }
