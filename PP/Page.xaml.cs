@@ -31,6 +31,8 @@ namespace PP
     /// - Move items
     /// - resize items
     /// - layers
+    /// - Change content
+    /// - Alignme
     /// </remarks>
     public sealed partial class DrawingPage : Page
     {
