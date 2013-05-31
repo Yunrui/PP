@@ -32,7 +32,7 @@ namespace PP
     /// - resize items
     /// - layers
     /// - Change content
-    /// - Alignme
+    /// - Alignment
     /// </remarks>
     public sealed partial class DrawingPage : Page
     {
@@ -173,18 +173,37 @@ namespace PP
 
             Point point = e.GetPosition(this.panelcanvas);
 
+            Grid grid = new Grid();
+            Canvas.SetTop(grid, point.Y);
+            Canvas.SetLeft(grid, point.X);
+            grid.Width = 200;
+            grid.Height = 200;
+
+            Thumb thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 10, Width = 10, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, };
+            thumb.DragDelta += ThumbBottomRight_DragDelta;
+            grid.Children.Add(thumb);
+
+            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 10, Width = 10, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom };
+            thumb.DragDelta += ThumbBottomLeft_DragDelta;
+            grid.Children.Add(thumb);
+
+            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 10, Width = 10, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top };
+            thumb.DragDelta += ThumbTopRight_DragDelta;
+            grid.Children.Add(thumb);
+
+            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 10, Width = 10, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+            thumb.DragDelta += ThumbTopLeft_DragDelta;
+            grid.Children.Add(thumb);
+
             Rectangle blueRectangle = new Rectangle();
-            
-            blueRectangle.Height = 200;
-            blueRectangle.Width = 200;
-            Canvas.SetTop(blueRectangle, point.Y);
-            Canvas.SetLeft(blueRectangle, point.X);
             ImageBrush imgBrush = new ImageBrush();
             imgBrush.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(uri);
             blueRectangle.Fill = imgBrush;
-            panelcanvas.Children.Add(blueRectangle);
+            blueRectangle.Margin = new Thickness(5);
+            grid.Children.Add(blueRectangle);
+            panelcanvas.Children.Add(grid);
 
-            blueRectangle.Tapped += new TappedEventHandler(panelcanvas_Tapped);
+            grid.Tapped += new TappedEventHandler(panelcanvas_Tapped);
         }
 
         private void toolbox_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
@@ -199,7 +218,68 @@ namespace PP
 
         private void panelcanvas_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            // disable previous "selection"
+            foreach (UIElement element in this.panelcanvas.Children.Where(c => c is Grid).SelectMany(c => (c as Grid).Children))
+            {
+                Thumb thumb = element as Thumb;
+                if (thumb != null)
+                {
+                    thumb.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                }
+            }
+
+            Grid selectedElement = sender as Grid;
+            foreach (UIElement element in selectedElement.Children)
+            {
+                Thumb thumb = element as Thumb;
+                if (thumb != null)
+                {
+                    thumb.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                }
+            }
+        }
+
+        private void ThumbTopLeft_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            Thumb thumb = sender as Thumb;
+            Grid grid = thumb.Parent as Grid;
+           
+            grid.Width -= e.HorizontalChange;
+            grid.Height -= e.VerticalChange;
+            Canvas.SetLeft(grid, Canvas.GetLeft(grid) + e.HorizontalChange);
+            Canvas.SetTop(grid, Canvas.GetTop(grid) + e.VerticalChange);
+           
+        }
+
+        private void ThumbTopRight_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            Thumb thumb = sender as Thumb;
+            Grid grid = thumb.Parent as Grid;
+
+            grid.Width += e.HorizontalChange;
+            grid.Height -= e.VerticalChange;
+            Canvas.SetTop(grid, Canvas.GetTop(grid) + e.VerticalChange);
 
         }
+
+        private void ThumbBottomLeft_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            Thumb thumb = sender as Thumb;
+            Grid grid = thumb.Parent as Grid;
+
+            grid.Width -= e.HorizontalChange;
+            grid.Height += e.VerticalChange;
+            Canvas.SetLeft(grid, Canvas.GetLeft(grid) + e.HorizontalChange);
+        }
+
+        private void ThumbBottomRight_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            Thumb thumb = sender as Thumb;
+            Grid grid = thumb.Parent as Grid;
+
+            grid.Width += e.HorizontalChange;
+            grid.Height += e.VerticalChange;
+        }
+
     }
 }
