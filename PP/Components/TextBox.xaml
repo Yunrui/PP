@@ -11,6 +11,8 @@
     d:DesignWidth="400"
     Height="32"
     Width="400"
+    MinHeight="32"
+    MinWidth="100"
     Background="Red">
     
     <Grid Background="Azure">

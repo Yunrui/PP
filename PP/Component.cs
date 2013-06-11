@@ -14,9 +14,9 @@ namespace PP
             get { return this.GetType().FullName; }
         }
 
-        public int ComponentMinWidth { get { return 100; } }
+        public double ComponentMinWidth { get { return this.MinWidth; } }
 
-        public int ComponentMinHeight { get { return 32; } }
+        public double ComponentMinHeight { get { return this.MinHeight; } }
 
         public double InitialWidth { get { return this.Width; } }
 

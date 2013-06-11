@@ -14,8 +14,8 @@ namespace PP
     public interface IComponent
     {
         string ComponentName { get; }
-        int ComponentMinWidth { get; }
-        int ComponentMinHeight { get; }
+        double ComponentMinWidth { get; }
+        double ComponentMinHeight { get; }
         double InitialWidth { get; }
         double InitialHeight { get; }
         ResizeAnchorMode AnchorMode { get; }

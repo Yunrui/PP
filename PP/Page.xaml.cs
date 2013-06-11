@@ -196,7 +196,7 @@
             Exception exception = null;
             try
             {
-                var records = Instrumentation.Current.GetRecords(5);
+                var records = Instrumentation.Current.GetRecords(10);
                 MessageDialog md = new MessageDialog(records);
                 await md.ShowAsync();
             }
