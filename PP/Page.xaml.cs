@@ -53,47 +53,62 @@
 
         private async void panelcanvas_Drop(object sender, DragEventArgs e)
         {
-            // $NOTE: get Component based on selected template
-            Uri uri = (Uri) e.Data.Properties["SelectedComponent"];
-            Component component = ComponentRetriever.Retrieve(uri.ToString());
+            // $IMPORTANT: we must catch all exceptions in "async void" method, 
+            // otherwise application crashes without a chance to call into UnhandledException Handler
+            Exception exception = null;
+            try
+            {
+                // $NOTE: get Component based on selected template
+                Uri uri = (Uri)e.Data.Properties["SelectedComponent"];
+                Component component = ComponentRetriever.Retrieve(uri.ToString());
 
-            Point point = e.GetPosition(this.panelcanvas);
+                Point point = e.GetPosition(this.panelcanvas);
 
-            Grid grid = new Grid();
-            Canvas.SetTop(grid, point.Y);
-            Canvas.SetLeft(grid, point.X);
-            grid.Width = component.InitialWidth+30;
-            grid.Height = component.InitialHeight;
+                Grid grid = new Grid();
+                Canvas.SetTop(grid, point.Y);
+                Canvas.SetLeft(grid, point.X);
+                grid.Width = component.InitialWidth + 30;
+                grid.Height = component.InitialHeight;
 
-            Thumb thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, };
-            thumb.DragDelta += ThumbBottomRight_DragDelta;
-            grid.Children.Add(thumb);
+                Thumb thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, };
+                thumb.DragDelta += ThumbBottomRight_DragDelta;
+                grid.Children.Add(thumb);
 
-            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom };
-            thumb.DragDelta += ThumbBottomLeft_DragDelta;
-            grid.Children.Add(thumb);
+                thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom };
+                thumb.DragDelta += ThumbBottomLeft_DragDelta;
+                grid.Children.Add(thumb);
 
-            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top };
-            thumb.DragDelta += ThumbTopRight_DragDelta;
-            grid.Children.Add(thumb);
+                thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top };
+                thumb.DragDelta += ThumbTopRight_DragDelta;
+                grid.Children.Add(thumb);
 
-            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
-            thumb.DragDelta += ThumbTopLeft_DragDelta;
-            grid.Children.Add(thumb);
+                thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+                thumb.DragDelta += ThumbTopLeft_DragDelta;
+                grid.Children.Add(thumb);
 
-            grid.Children.Add(component);
+                grid.Children.Add(component);
 
-            // Set Manipulation to Component instead of Grid
-            // Otherwise, Resizing will also move components
-            component.ManipulationMode = ManipulationModes.All;
-            component.ManipulationDelta += grid_ManipulationDelta;
-            grid.RenderTransform = new TranslateTransform();
+                // Set Manipulation to Component instead of Grid
+                // Otherwise, Resizing will also move components
+                component.ManipulationMode = ManipulationModes.All;
+                component.ManipulationDelta += grid_ManipulationDelta;
+                grid.RenderTransform = new TranslateTransform();
 
-            panelcanvas.Children.Add(grid);
+                panelcanvas.Children.Add(grid);
 
-            grid.Tapped += new TappedEventHandler(component_Tapped);
+                grid.Tapped += new TappedEventHandler(component_Tapped);
 
-            await Instrumentation.Current.Log(uri.ToString());
+                await Instrumentation.Current.Log(uri.ToString());
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+
+            if (exception != null)
+            {
+                await Instrumentation.Current.Log(exception, exception.StackTrace);
+            }
         }
 
         void grid_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
@@ -178,8 +193,22 @@
 
         private async void Instrument_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialog md = new MessageDialog(Instrumentation.Current.GetRecords());
-            await md.ShowAsync();
+            Exception exception = null;
+            try
+            {
+                var records = Instrumentation.Current.GetRecords(5);
+                MessageDialog md = new MessageDialog(records);
+                await md.ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+
+            if (exception != null)
+            {
+                await Instrumentation.Current.Log(exception, exception.StackTrace);
+            }
         }
 
         private void Remove_Click(object sender, RoutedEventArgs e)
