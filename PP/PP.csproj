@@ -130,6 +130,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="packages.config" />
     <None Include="PP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +162,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PerpetuumSoft.Controls">
+      <HintPath>..\packages\PerpetuumSoft.Controls.2.0.0\lib\winrt\PerpetuumSoft.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="PerpetuumSoft.WinRT.Framework">
+      <HintPath>..\packages\PerpetuumSoft.Controls.2.0.0\lib\winrt\PerpetuumSoft.WinRT.Framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
