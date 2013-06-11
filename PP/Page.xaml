@@ -21,13 +21,27 @@
             <Image Source="Assets/AlertBox.png" Width="128" Height="128"></Image>
         </ListView>
 
-
         <Canvas  Name="panelcanvas" Grid.Column="2" AllowDrop="True" Drop="panelcanvas_Drop" HorizontalAlignment="Left" Height="712" Margin="0,28,0,0" VerticalAlignment="Top" Width="1206">
             <Canvas.Background>
                 <ImageBrush ImageSource="Assets/WebPage.png" />
             </Canvas.Background>
 
         </Canvas>
+        
 
     </Grid>
+    
+    <Page.BottomAppBar>
+        <AppBar Padding="10,0,10,0" Name="appBar">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button Content="Instrument" Click="Instrument_Click" />
+                </StackPanel>
+
+                <StackPanel Name="contextPanel" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Remove" Click="Remove_Click" />
+                </StackPanel>
+            </Grid>
+        </AppBar>
+    </Page.BottomAppBar>
 </Page>

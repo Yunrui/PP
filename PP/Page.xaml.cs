@@ -1,62 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Windows.Devices.Input;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Storage;
-using Windows.UI;
-using Windows.UI.Input;
-using Windows.UI.Input.Inking;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Shapes;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
-namespace PP
+﻿namespace PP
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using Windows.Devices.Input;
+    using Windows.Foundation;
+    using Windows.Foundation.Collections;
+    using Windows.Storage;
+    using Windows.UI;
+    using Windows.UI.Input;
+    using Windows.UI.Input.Inking;
+    using Windows.UI.Popups;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Controls;
+    using Windows.UI.Xaml.Controls.Primitives;
+    using Windows.UI.Xaml.Data;
+    using Windows.UI.Xaml.Input;
+    using Windows.UI.Xaml.Media;
+    using Windows.UI.Xaml.Media.Imaging;
+    using Windows.UI.Xaml.Navigation;
+    using Windows.UI.Xaml.Shapes;
+
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page for design a prototype
     /// </summary>
-    /// <remarks>
-    /// $TODO: we need
-    /// - Move items
-    /// - resize items
-    /// - layers
-    /// - Change content
-    /// - Alignment
-    /// </remarks>
     public sealed partial class DrawingPage : Page
     {
-        InkManager inkManager = new Windows.UI.Input.Inking.InkManager();
-        private uint penID;
-        private uint touchID;
-        private Point previousContactPt;
-        private Point currentContactPt;
-        private double x1;
-        private double y1;
-        private double x2;
-        private double y2;
-
+        private Grid selectedElement = null;
 
         public DrawingPage()
         {
             this.InitializeComponent();
 
-            /* Disable digital ink now
-            panelcanvas.PointerPressed += new PointerEventHandler(InkCanvas_PointerPressed);
-            panelcanvas.PointerMoved += new PointerEventHandler(InkCanvas_PointerMoved);
-            panelcanvas.PointerReleased += new PointerEventHandler(InkCanvas_PointerReleased);
-            panelcanvas.PointerExited += new PointerEventHandler(InkCanvas_PointerReleased);
-             * */
+            this.panelcanvas.Tapped += canvas_Tapped;
+            this.appBar.Opened += appBar_Opened;
         }
 
         /// <summary>
@@ -68,7 +46,12 @@ namespace PP
         {
         }
 
-        private void panelcanvas_Drop(object sender, DragEventArgs e)
+        private void appBar_Opened(object sender, object e)
+        {
+            this.contextPanel.Visibility = this.selectedElement == null ? Visibility.Collapsed : Windows.UI.Xaml.Visibility.Visible;
+        }
+
+        private async void panelcanvas_Drop(object sender, DragEventArgs e)
         {
             Uri uri = (Uri) e.Data.Properties["SelectedComponent"];
 
@@ -96,6 +79,7 @@ namespace PP
             thumb.DragDelta += ThumbTopLeft_DragDelta;
             grid.Children.Add(thumb);
 
+            // $TODO: replace this code with customized UserControl
             Rectangle blueRectangle = new Rectangle();
             ImageBrush imgBrush = new ImageBrush();
             imgBrush.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(uri);
@@ -104,19 +88,22 @@ namespace PP
             grid.Children.Add(blueRectangle);
 
             // For Moving object
-            grid.ManipulationMode = ManipulationModes.All;
-            grid.ManipulationDelta += grid_ManipulationDelta;
+            blueRectangle.ManipulationMode = ManipulationModes.All;
+            blueRectangle.ManipulationDelta += grid_ManipulationDelta;
             grid.RenderTransform = new TranslateTransform();
             
             panelcanvas.Children.Add(grid);
 
-            grid.Tapped += new TappedEventHandler(panelcanvas_Tapped);
+            grid.Tapped += new TappedEventHandler(component_Tapped);
+
+            await Instrumentation.Current.Log(uri.ToString());
         }
 
         void grid_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
             // Move the rectangle.
-            Grid grid = sender as Grid;
+            Rectangle rec = sender as Rectangle;
+            Grid grid = rec.Parent as Grid;
             TranslateTransform transform = grid.RenderTransform as TranslateTransform;
             transform.X += e.Delta.Translation.X;
             transform.Y += e.Delta.Translation.Y;
@@ -132,27 +119,16 @@ namespace PP
             }
         }
 
-        private void panelcanvas_Tapped(object sender, TappedRoutedEventArgs e)
+        private void canvas_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            // disable previous "selection"
-            foreach (UIElement element in this.panelcanvas.Children.Where(c => c is Grid).SelectMany(c => (c as Grid).Children))
-            {
-                Thumb thumb = element as Thumb;
-                if (thumb != null)
-                {
-                    thumb.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
-                }
-            }
+            Unselect();
+        }
 
-            Grid selectedElement = sender as Grid;
-            foreach (UIElement element in selectedElement.Children)
-            {
-                Thumb thumb = element as Thumb;
-                if (thumb != null)
-                {
-                    thumb.Visibility = Windows.UI.Xaml.Visibility.Visible;
-                }
-            }
+        private void component_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            this.Unselect();
+            this.Select(sender as Grid);
+            e.Handled = true;
         }
 
         private void ThumbTopLeft_DragDelta(object sender, DragDeltaEventArgs e)
@@ -164,7 +140,6 @@ namespace PP
             grid.Height -= e.VerticalChange;
             Canvas.SetLeft(grid, Canvas.GetLeft(grid) + e.HorizontalChange);
             Canvas.SetTop(grid, Canvas.GetTop(grid) + e.VerticalChange);
-           
         }
 
         private void ThumbTopRight_DragDelta(object sender, DragDeltaEventArgs e)
@@ -197,105 +172,62 @@ namespace PP
             grid.Height += e.VerticalChange;
         }
 
-        public void InkCanvas_PointerReleased(object sender, PointerRoutedEventArgs e)
+        private async void Instrument_Click(object sender, RoutedEventArgs e)
         {
-            if (e.Pointer.PointerId == penID)
-            {
-                Windows.UI.Input.PointerPoint pt = e.GetCurrentPoint(panelcanvas);
-
-                // Pass the pointer information to the InkManager.  
-                inkManager.ProcessPointerUp(pt);
-            }
-
-            else if (e.Pointer.PointerId == touchID)
-            {
-                // Process touch input 
-            }
-
-            this.touchID = 0;
-            this.penID = 0;
-
-            // Call an application-defined function to render the ink strokes. 
-
-
-            e.Handled = true;
+            MessageDialog md = new MessageDialog(Instrumentation.Current.GetRecords());
+            await md.ShowAsync();
         }
 
-
-        private void InkCanvas_PointerMoved(object sender, PointerRoutedEventArgs e)
+        private void Remove_Click(object sender, RoutedEventArgs e)
         {
-
-            if (e.Pointer.PointerId == this.penID)
+            if (this.selectedElement != null)
             {
-                PointerPoint pt = e.GetCurrentPoint(panelcanvas);
+                this.panelcanvas.Children.Remove(this.selectedElement);
+            }
 
-                // Render a red line on the canvas as the pointer moves.  
-                // Distance() is an application-defined function that tests 
-                // whether the pointer has moved far enough to justify  
-                // drawing a new line. 
-                currentContactPt = pt.Position;
-                x1 = previousContactPt.X;
-                y1 = previousContactPt.Y;
-                x2 = currentContactPt.X;
-                y2 = currentContactPt.Y;
+            // After remove selected element, "selected" should disappear then we have to close AppBar
+            this.appBar.IsOpen = false;
+        }
 
-                if (Distance(x1, y1, x2, y2) > 2.0)
+        /// <summary>
+        /// Unselect any items in canvas
+        /// </summary>
+        private void Unselect()
+        {
+            // disable previous "selection"
+            foreach (UIElement element in this.panelcanvas.Children.Where(c => c is Grid).SelectMany(c => (c as Grid).Children))
+            {
+                Thumb thumb = element as Thumb;
+                if (thumb != null)
                 {
-                    Line line = new Line()
-                    {
-                        X1 = x1,
-                        Y1 = y1,
-                        X2 = x2,
-                        Y2 = y2,
-                        StrokeThickness = 4.0,
-                        Stroke = new SolidColorBrush(Colors.Green)
-                    };
-
-                    previousContactPt = currentContactPt;
-
-                    // Draw the line on the canvas by adding the Line object as 
-                    // a child of the Canvas object. 
-                    panelcanvas.Children.Add(line);
-
-                    // Pass the pointer information to the InkManager. 
-                    inkManager.ProcessPointerUpdate(pt);
+                    thumb.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
                 }
             }
 
-            else if (e.Pointer.PointerId == touchID)
-            {
-                // Process touch input 
-            }
-
-
+            // Close AppBar since "Selected" is false now;
+            this.selectedElement = null;
+            this.appBar.IsOpen = false;
         }
 
-
-        private double Distance(double x1, double y1, double x2, double y2)
+        /// <summary>
+        /// Select
+        /// </summary>
+        /// <param name="selectedElement"></param>
+        private void Select(Grid selectedElement)
         {
-            double d = 0;
-            d = Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2));
-            return d;
-        }
-
-        public void InkCanvas_PointerPressed(object sender, PointerRoutedEventArgs e)
-        {
-            // Get information about the pointer location. 
-            PointerPoint pt = e.GetCurrentPoint(panelcanvas);
-            previousContactPt = pt.Position;
-
-            // Accept input only from a pen or mouse with the left button pressed.  
-            PointerDeviceType pointerDevType = e.Pointer.PointerDeviceType;
-            if (pointerDevType == PointerDeviceType.Pen || pointerDevType == PointerDeviceType.Touch ||
-                    pointerDevType == PointerDeviceType.Mouse &&
-                    pt.Properties.IsLeftButtonPressed)
+            foreach (UIElement element in selectedElement.Children)
             {
-                // Pass the pointer information to the InkManager. 
-                inkManager.ProcessPointerDown(pt);
-                penID = pt.PointerId;
-
-                e.Handled = true;
+                Thumb thumb = element as Thumb;
+                if (thumb != null)
+                {
+                    thumb.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                }
             }
+
+            // $TODO: IsSticky = true better UX?
+            this.selectedElement = selectedElement;
+            this.appBar.IsOpen = true;
+            this.appBar.IsSticky = true;
         }
     }
 }
