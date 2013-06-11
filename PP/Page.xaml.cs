@@ -53,45 +53,42 @@
 
         private async void panelcanvas_Drop(object sender, DragEventArgs e)
         {
+            // $NOTE: get Component based on selected template
             Uri uri = (Uri) e.Data.Properties["SelectedComponent"];
+            Component component = ComponentRetriever.Retrieve(uri.ToString());
 
             Point point = e.GetPosition(this.panelcanvas);
 
             Grid grid = new Grid();
             Canvas.SetTop(grid, point.Y);
             Canvas.SetLeft(grid, point.X);
-            grid.Width = 200;
-            grid.Height = 200;
+            grid.Width = component.InitialWidth+30;
+            grid.Height = component.InitialHeight;
 
-            Thumb thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 10, Width = 10, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, };
+            Thumb thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, };
             thumb.DragDelta += ThumbBottomRight_DragDelta;
             grid.Children.Add(thumb);
 
-            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 10, Width = 10, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom };
+            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom };
             thumb.DragDelta += ThumbBottomLeft_DragDelta;
             grid.Children.Add(thumb);
 
-            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 10, Width = 10, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top };
+            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top };
             thumb.DragDelta += ThumbTopRight_DragDelta;
             grid.Children.Add(thumb);
 
-            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 10, Width = 10, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
             thumb.DragDelta += ThumbTopLeft_DragDelta;
             grid.Children.Add(thumb);
 
-            // $TODO: replace this code with customized UserControl
-            Rectangle blueRectangle = new Rectangle();
-            ImageBrush imgBrush = new ImageBrush();
-            imgBrush.ImageSource = new Windows.UI.Xaml.Media.Imaging.BitmapImage(uri);
-            blueRectangle.Fill = imgBrush;
-            blueRectangle.Margin = new Thickness(5);
-            grid.Children.Add(blueRectangle);
+            grid.Children.Add(component);
 
-            // For Moving object
-            blueRectangle.ManipulationMode = ManipulationModes.All;
-            blueRectangle.ManipulationDelta += grid_ManipulationDelta;
+            // Set Manipulation to Component instead of Grid
+            // Otherwise, Resizing will also move components
+            component.ManipulationMode = ManipulationModes.All;
+            component.ManipulationDelta += grid_ManipulationDelta;
             grid.RenderTransform = new TranslateTransform();
-            
+
             panelcanvas.Children.Add(grid);
 
             grid.Tapped += new TappedEventHandler(component_Tapped);
@@ -101,9 +98,7 @@
 
         void grid_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            // Move the rectangle.
-            Rectangle rec = sender as Rectangle;
-            Grid grid = rec.Parent as Grid;
+            Grid grid = (sender as Component).Parent as Grid;
             TranslateTransform transform = grid.RenderTransform as TranslateTransform;
             transform.X += e.Delta.Translation.X;
             transform.Y += e.Delta.Translation.Y;
@@ -111,6 +106,7 @@
 
         private void toolbox_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
         {        
+            
             IList<IStorageItem> selectedFiles = new List<IStorageItem>();
 
             if (e.Items != null && e.Items.Count > 0)
@@ -121,6 +117,7 @@
 
         private void canvas_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            // Tap blank area to unselect everything
             Unselect();
         }
 
@@ -135,11 +132,18 @@
         {
             Thumb thumb = sender as Thumb;
             Grid grid = thumb.Parent as Grid;
-           
-            grid.Width -= e.HorizontalChange;
-            grid.Height -= e.VerticalChange;
-            Canvas.SetLeft(grid, Canvas.GetLeft(grid) + e.HorizontalChange);
-            Canvas.SetTop(grid, Canvas.GetTop(grid) + e.VerticalChange);
+
+            var component = grid.Children.Where(c => c is Component).First() as Component;
+
+            // $TODO: separate class for this logic and the following
+            var width = Math.Max(grid.Width - e.HorizontalChange, component.ComponentMinWidth);
+            var height = Math.Max(grid.Height - e.VerticalChange, component.ComponentMinHeight);
+
+            Canvas.SetLeft(grid, Canvas.GetLeft(grid) + (grid.Width - width));
+            Canvas.SetTop(grid, Canvas.GetTop(grid) + (grid.Height - height));
+
+            grid.Width = width;
+            grid.Height = height;
         }
 
         private void ThumbTopRight_DragDelta(object sender, DragDeltaEventArgs e)
@@ -205,6 +209,10 @@
             }
 
             // Close AppBar since "Selected" is false now;
+            if (this.selectedElement != null)
+            {
+                selectedElement.Background = new SolidColorBrush(Colors.Transparent);
+            }
             this.selectedElement = null;
             this.appBar.IsOpen = false;
         }
@@ -228,6 +236,7 @@
             this.selectedElement = selectedElement;
             this.appBar.IsOpen = true;
             this.appBar.IsSticky = true;
+            selectedElement.Background = new SolidColorBrush(Colors.LightGray);
         }
     }
 }
