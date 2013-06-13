@@ -2,15 +2,33 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace PP
 {
     class ComponentRetriever
     {
-        internal static Component Retrieve(string componentName)
+        internal static Component Retrieve(string componentUri)
         {
-            return new Components.TextBox();
+            // get the component name from the uri
+            // the uri may be like : /Assets/Label.png
+
+            int startPos = componentUri.LastIndexOf("/");
+            int endPos = componentUri.LastIndexOf(".");
+
+            string componentName = componentUri.Substring(startPos + 1, endPos - startPos - 1).ToLower();
+
+            if (componentName.Equals("textbox"))
+            {
+                return new Components.TextBox();
+            }
+            else if (componentName.Equals("label"))
+            {
+                return new Components.Label();
+            }
+
+            return null;
         }
     }
 }

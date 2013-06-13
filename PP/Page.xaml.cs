@@ -60,7 +60,14 @@
             {
                 // $NOTE: get Component based on selected template
                 Uri uri = (Uri)e.Data.Properties["SelectedComponent"];
-                Component component = ComponentRetriever.Retrieve(uri.ToString());
+                Component component = ComponentRetriever.Retrieve(uri.LocalPath.ToString());
+
+                if (component == null)
+                {
+                    await Instrumentation.Current.Log("Wrong Control");
+
+                    return;
+                }
 
                 Point point = e.GetPosition(this.panelcanvas);
 

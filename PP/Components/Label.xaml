@@ -1,5 +1,5 @@
 ﻿<pp:Component
-    x:Class="PP.Components.TextBox"
+    x:Class="PP.Components.Label"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PP.Components"
@@ -14,8 +14,8 @@
     MinHeight="32"
     MinWidth="100"
     Background="Red">
-    
+
     <Grid Background="Azure">
-        <TextBox Foreground="Gray" Text="Sampe Text"/>
+        <TextBlock Foreground="Gray" FontSize="24" Text="Sample Label"/>
     </Grid>
 </pp:Component>
