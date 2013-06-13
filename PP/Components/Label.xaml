@@ -13,7 +13,8 @@
     Width="400"
     MinHeight="32"
     MinWidth="100"
-    Background="Red">
+    Background="Red"
+    >
 
     <Grid Background="Azure">
         <TextBlock Foreground="Gray" FontSize="24" Text="Sample Label"/>

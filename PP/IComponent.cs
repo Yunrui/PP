@@ -9,6 +9,7 @@ namespace PP
     public enum ResizeAnchorMode
     {
         Full = 0,
+        WidthOnly = 1
     }
 
     public interface IComponent
@@ -19,5 +20,7 @@ namespace PP
         double InitialWidth { get; }
         double InitialHeight { get; }
         ResizeAnchorMode AnchorMode { get; }
+
+        void Resize(double widthPercentage, double heightPercentage);
     }
 }

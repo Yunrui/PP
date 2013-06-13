@@ -1,5 +1,6 @@
 ﻿namespace PP
 {
+    using PP.Components;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -166,6 +167,15 @@
 
             grid.Width = width;
             grid.Height = height;
+
+            foreach (var children in grid.Children)
+            {
+                if (children.GetType().FullName.ToLower().Contains("pp.components"))
+                {
+                    var tmpChildren = (Component)children;
+                    tmpChildren.Resize(grid.Width / width, grid.Height / height);
+                }
+            }
         }
 
         private void ThumbTopRight_DragDelta(object sender, DragDeltaEventArgs e)

@@ -23,7 +23,10 @@ namespace PP.Components
     {
         public Label()
         {
+            this.AnchorMode = ResizeAnchorMode.WidthOnly;
+
             this.InitializeComponent();
         }
+
     }
 }

@@ -22,6 +22,26 @@ namespace PP
 
         public double InitialHeight { get { return this.Height; } }
 
-        public ResizeAnchorMode AnchorMode { get { return ResizeAnchorMode.Full; } }
+        public ResizeAnchorMode AnchorMode 
+        { 
+            get 
+            { 
+                return this.anchorMode; 
+            }
+ 
+            set
+            {
+                this.anchorMode = value;
+            }
+        }
+
+        private ResizeAnchorMode anchorMode = ResizeAnchorMode.Full;
+
+        public void Resize(double widthPercentage, double heightPercentage)
+        {
+            this.Width *= widthPercentage;
+
+            this.Height *= heightPercentage;
+        }
     }
 }
