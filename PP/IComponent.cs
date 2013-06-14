@@ -21,6 +21,6 @@ namespace PP
         double InitialHeight { get; }
         ResizeAnchorMode AnchorMode { get; }
 
-        void Resize(double widthPercentage, double heightPercentage);
+        void Resize(double percentageWidth, double percentageHeight);
     }
 }

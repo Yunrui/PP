@@ -162,20 +162,21 @@
             var width = Math.Max(grid.Width - e.HorizontalChange, component.ComponentMinWidth);
             var height = Math.Max(grid.Height - e.VerticalChange, component.ComponentMinHeight);
 
-            Canvas.SetLeft(grid, Canvas.GetLeft(grid) + (grid.Width - width));
-            Canvas.SetTop(grid, Canvas.GetTop(grid) + (grid.Height - height));
+            double deltaWidth = grid.Width - width;
+            double deltaHeight = grid.Height - height;
+            double percentageWidth = width / grid.Width;
+            double percentageHeight = height / grid.Height;
+
+            Canvas.SetLeft(grid, Canvas.GetLeft(grid) + deltaWidth);
+            Canvas.SetTop(grid, Canvas.GetTop(grid) + deltaHeight);
 
             grid.Width = width;
             grid.Height = height;
 
-            foreach (var children in grid.Children)
-            {
-                if (children.GetType().FullName.ToLower().Contains("pp.components"))
-                {
-                    var tmpChildren = (Component)children;
-                    tmpChildren.Resize(grid.Width / width, grid.Height / height);
-                }
-            }
+            Canvas.SetLeft(component, Canvas.GetLeft(component) + deltaWidth);
+            Canvas.SetTop(component, Canvas.GetTop(component) + deltaHeight);
+            component.Resize(percentageWidth, percentageHeight);
+
         }
 
         private void ThumbTopRight_DragDelta(object sender, DragDeltaEventArgs e)
@@ -183,10 +184,18 @@
             Thumb thumb = sender as Thumb;
             Grid grid = thumb.Parent as Grid;
 
+            double percentageWidth = (grid.Width + e.HorizontalChange) / grid.Width;
+            double percentageHeight = (grid.Height - e.VerticalChange) / grid.Height;
+
             grid.Width += e.HorizontalChange;
             grid.Height -= e.VerticalChange;
             Canvas.SetTop(grid, Canvas.GetTop(grid) + e.VerticalChange);
 
+            var component = grid.Children.Where(c => c is Component).First() as Component;
+
+            Canvas.SetTop(component, Canvas.GetTop(component) + e.VerticalChange);
+
+            component.Resize(percentageWidth, percentageHeight);
         }
 
         private void ThumbBottomLeft_DragDelta(object sender, DragDeltaEventArgs e)
@@ -194,9 +203,18 @@
             Thumb thumb = sender as Thumb;
             Grid grid = thumb.Parent as Grid;
 
+            double percentageWidth = (grid.Width - e.HorizontalChange) / grid.Width;
+            double percentageHeight = (grid.Height + e.VerticalChange) / grid.Height;
+
             grid.Width -= e.HorizontalChange;
             grid.Height += e.VerticalChange;
             Canvas.SetLeft(grid, Canvas.GetLeft(grid) + e.HorizontalChange);
+
+            var component = grid.Children.Where(c => c is Component).First() as Component;
+
+            Canvas.SetLeft(component, Canvas.GetLeft(component) + e.HorizontalChange);
+
+            component.Resize(percentageWidth, percentageHeight);
         }
 
         private void ThumbBottomRight_DragDelta(object sender, DragDeltaEventArgs e)
@@ -204,8 +222,15 @@
             Thumb thumb = sender as Thumb;
             Grid grid = thumb.Parent as Grid;
 
+            double percentageWidth = (grid.Width + e.HorizontalChange) / grid.Width;
+            double percentageHeight = (grid.Height + e.VerticalChange) / grid.Height;
+
             grid.Width += e.HorizontalChange;
             grid.Height += e.VerticalChange;
+
+            var component = grid.Children.Where(c => c is Component).First() as Component;
+
+            component.Resize(percentageWidth, percentageHeight);
         }
 
         private async void Instrument_Click(object sender, RoutedEventArgs e)
