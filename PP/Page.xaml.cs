@@ -280,6 +280,7 @@
         /// </summary>
         private void Unselect()
         {
+            //Colors.BlanchedAlmond
             // disable previous "selection"
             foreach (UIElement element in this.panelcanvas.Children.Where(c => c is Grid).SelectMany(c => (c as Grid).Children))
             {

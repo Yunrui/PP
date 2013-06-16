@@ -119,6 +119,9 @@
     <Compile Include="Components\TextBox.xaml.cs">
       <DependentUpon>TextBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ExtendedSplashScreen.xaml.cs">
+      <DependentUpon>ExtendedSplashScreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IComponent.cs" />
     <Compile Include="Instrumentation.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -160,6 +163,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Components\TextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ExtendedSplashScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

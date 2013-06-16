@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Background;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Popups;
@@ -132,7 +133,7 @@ AKAA}");
                 // When the navigation stack isn't restored navigate to the first page,
                 // configuring the new page by passing required information as a navigation
                 // parameter
-                if (!rootFrame.Navigate(typeof(DrawingPage), args.Arguments))
+                if (!rootFrame.Navigate(typeof(ExtendedSplashScreen), args.SplashScreen))
                 {
                     throw new Exception("Failed to create initial page");
                 }
@@ -170,4 +171,5 @@ AKAA}");
             Instrumentation.Current.SessionStart();
         }
     }
+
 }

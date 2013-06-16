@@ -38,6 +38,7 @@
                 </StackPanel>
 
                 <StackPanel Name="contextPanel" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Foreground" Click="Top_Click" />
                     <Button Content="Remove" Click="Remove_Click" />
                 </StackPanel>
             </Grid>
