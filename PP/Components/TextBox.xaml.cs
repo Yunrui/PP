@@ -22,5 +22,20 @@ namespace PP.Components
         {
             this.InitializeComponent();
         }
+
+        private void TextBlock_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            this.ConfigurePopup.IsOpen = true;
+        }
+
+        private void ConfigurePopup_Closed(object sender, object e)
+        {
+            /*
+             * Replace the new line with " "
+             * The conifgure textbox with support text wrap & accepct returns.
+             * But the textblock will not by design
+             */
+            this.TextBlock.Text = this.ConfigureTextBox.Text.Replace(Environment.NewLine, " ");
+        }
     }
 }

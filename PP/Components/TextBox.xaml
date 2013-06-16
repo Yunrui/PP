@@ -18,6 +18,30 @@
     >
     
     <Grid Background="Azure">
-        <TextBox Foreground="Gray" Text="Sampe Text"/>
+        <Border BorderThickness = "4" BorderBrush="Gray" x:Name="Border">
+            <TextBlock 
+                x:Name="TextBlock" 
+                Foreground="Gray" 
+                FontSize="18" 
+                Text="Sampe Text" 
+                Margin="1" 
+                DoubleTapped="TextBlock_DoubleTapped"
+             />
+        </Border>
+
+        <Popup 
+            x:Name="ConfigurePopup" 
+            IsLightDismissEnabled="True"
+            Closed="ConfigurePopup_Closed">
+
+            <TextBox 
+                x:Name="ConfigureTextBox"             
+                Height="300"
+                Width="400"
+                Background="Beige"
+                TextWrapping="Wrap"
+                AcceptsReturn="True">
+            </TextBox>
+        </Popup>
     </Grid>
 </pp:Component>
