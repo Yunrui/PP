@@ -243,18 +243,12 @@ namespace PP
             }
         }
 
-        public async Task RestoreSettings()
+        public async Task<string> LoadPersistData()
         {
             try
             {
-                var ms = new MemoryStream();
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<Record>));
-
                 StorageFile file = await ApplicationData.Current.LocalFolder.GetFileAsync("Instrumentation");
-                using (IInputStream inStream = await file.OpenSequentialReadAsync())
-                {
-                    this.records = ((IList<Record>)serializer.ReadObject(inStream.AsStreamForRead())).ToList();
-                }
+                return await FileIO.ReadTextAsync(file);
             }
             catch (FileNotFoundException)
             {
@@ -262,6 +256,16 @@ namespace PP
             catch (XmlException)
             {
             }
+
+            return string.Empty;
+        }
+
+        public void RestoreSettings(string content)
+        {
+            var ms = new MemoryStream();
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<Record>));
+
+            this.records = ((IList<Record>)serializer.ReadObject(new MemoryStream(Encoding.UTF8.GetBytes(content)))).ToList();
         }
 
         public string GetRecords(int count)

@@ -141,9 +141,6 @@ AKAA}");
             // Ensure the current window is active
             Window.Current.Activate();
 
-            // $TODO: no place to catch this exception??
-            // $TODO: should be an async operation
-            await Instrumentation.Current.RestoreSettings();
             Instrumentation.Current.SessionStart();
         }
 

@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using Windows.ApplicationModel.Activation;
+using Windows.Data.Json;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -33,8 +36,37 @@ namespace PP
             this.Loaded += ExtendedSplashScreen_Loaded;
         }
 
-        void ExtendedSplashScreen_Loaded(object sender, RoutedEventArgs e)
+        async void ExtendedSplashScreen_Loaded(object sender, RoutedEventArgs e)
         {
+            bool uploaded = false;
+            string persistData = await Instrumentation.Current.LoadPersistData();
+
+            using (var client = new HttpClient())
+            {
+                StringContent content = new StringContent(persistData, Encoding.UTF8, "text/json");
+
+                try
+                {
+                    // $TODO: replace this with real URL
+                    using (var resp = await client.PostAsync("http://microsoft.com/UploadInstrumentation", content))
+                    {
+                        if (resp.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            // $NOTE: if uploaded successfully, we can simply leave Intrumentation empty.
+                            uploaded = true;
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            if (!uploaded && !string.IsNullOrWhiteSpace(persistData))
+            {
+                Instrumentation.Current.RestoreSettings(persistData);
+            }
+
             this.Frame.Navigate(typeof(DrawingPage));
         }
 
