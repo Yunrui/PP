@@ -13,7 +13,9 @@
     Width="400"
     MinHeight="32"
     MinWidth="100"
-    Background="Red">
+    Background="Red"
+    AnchorMode="WidthOnly"
+    >
     
     <Grid Background="Azure">
         <TextBox Foreground="Gray" Text="Sampe Text"/>
