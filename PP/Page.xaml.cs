@@ -29,6 +29,7 @@
     public sealed partial class DrawingPage : Page
     {
         private Grid selectedElement = null;
+        private const int thumbSize = 15;
 
         public DrawingPage()
         {
@@ -75,22 +76,22 @@
                 Grid grid = new Grid();
                 Canvas.SetTop(grid, point.Y);
                 Canvas.SetLeft(grid, point.X);
-                grid.Width = component.InitialWidth + 30;
+                grid.Width = component.InitialWidth + 2 * thumbSize;
                 grid.Height = component.InitialHeight;
 
-                Thumb thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, };
+                Thumb thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = thumbSize, Width = thumbSize, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, };
                 thumb.DragDelta += ThumbBottomRight_DragDelta;
                 grid.Children.Add(thumb);
 
-                thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom };
+                thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = thumbSize, Width = thumbSize, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom };
                 thumb.DragDelta += ThumbBottomLeft_DragDelta;
                 grid.Children.Add(thumb);
 
-                thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top };
+                thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = thumbSize, Width = thumbSize, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top };
                 thumb.DragDelta += ThumbTopRight_DragDelta;
                 grid.Children.Add(thumb);
 
-                thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = 15, Width = 15, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+                thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = thumbSize, Width = thumbSize, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
                 thumb.DragDelta += ThumbTopLeft_DragDelta;
                 grid.Children.Add(thumb);
 
@@ -155,82 +156,115 @@
         {
             Thumb thumb = sender as Thumb;
             Grid grid = thumb.Parent as Grid;
-
             var component = grid.Children.Where(c => c is Component).First() as Component;
 
-            // $TODO: separate class for this logic and the following
-            var width = Math.Max(grid.Width - e.HorizontalChange, component.ComponentMinWidth);
-            var height = Math.Max(grid.Height - e.VerticalChange, component.ComponentMinHeight);
+            // Resize has to respect minimum width/height
+            var width = Math.Max(grid.Width - e.HorizontalChange, component.ComponentMinWidth + 2 * thumbSize);
+
+            // $NOTE: at least now, grid.Height == component.Height
+            var height = grid.Height;
+            if (component.AnchorMode != ResizeAnchorMode.WidthOnly)
+            {
+                height = Math.Max(grid.Height - e.VerticalChange, component.ComponentMinHeight);
+            }
 
             double deltaWidth = grid.Width - width;
             double deltaHeight = grid.Height - height;
-            double percentageWidth = width / grid.Width;
-            double percentageHeight = height / grid.Height;
 
+            // Set TopLeft position
             Canvas.SetLeft(grid, Canvas.GetLeft(grid) + deltaWidth);
             Canvas.SetTop(grid, Canvas.GetTop(grid) + deltaHeight);
 
+            // Set Grid Size
             grid.Width = width;
             grid.Height = height;
 
-            Canvas.SetLeft(component, Canvas.GetLeft(component) + deltaWidth);
-            Canvas.SetTop(component, Canvas.GetTop(component) + deltaHeight);
-            component.Resize(percentageWidth, percentageHeight);
-
+            // Update Size for component
+            component.Resize((width - 2 * thumbSize) / component.Width, height / component.Height);
         }
 
         private void ThumbTopRight_DragDelta(object sender, DragDeltaEventArgs e)
         {
             Thumb thumb = sender as Thumb;
             Grid grid = thumb.Parent as Grid;
-
-            double percentageWidth = (grid.Width + e.HorizontalChange) / grid.Width;
-            double percentageHeight = (grid.Height - e.VerticalChange) / grid.Height;
-
-            grid.Width += e.HorizontalChange;
-            grid.Height -= e.VerticalChange;
-            Canvas.SetTop(grid, Canvas.GetTop(grid) + e.VerticalChange);
-
             var component = grid.Children.Where(c => c is Component).First() as Component;
 
-            Canvas.SetTop(component, Canvas.GetTop(component) + e.VerticalChange);
+            // Resize has to respect minimum width/height
+            var width = Math.Max(grid.Width + e.HorizontalChange, component.ComponentMinWidth + 2 * thumbSize);
 
-            component.Resize(percentageWidth, percentageHeight);
+            // $NOTE: at least now, grid.Height == component.Height
+            var height = grid.Height;
+            if (component.AnchorMode != ResizeAnchorMode.WidthOnly)
+            {
+                height = Math.Max(grid.Height - e.VerticalChange, component.ComponentMinHeight);
+            }
+
+            double deltaWidth = grid.Width - width;
+            double deltaHeight = grid.Height - height;
+
+            // Set TopLeft position
+            Canvas.SetTop(grid, Canvas.GetTop(grid) + deltaHeight);
+
+            // Set Grid Size
+            grid.Width = width;
+            grid.Height = height;
+
+            // Update Size for component
+            component.Resize((width - 2 * thumbSize) / component.Width, height / component.Height);
         }
 
         private void ThumbBottomLeft_DragDelta(object sender, DragDeltaEventArgs e)
         {
             Thumb thumb = sender as Thumb;
             Grid grid = thumb.Parent as Grid;
-
-            double percentageWidth = (grid.Width - e.HorizontalChange) / grid.Width;
-            double percentageHeight = (grid.Height + e.VerticalChange) / grid.Height;
-
-            grid.Width -= e.HorizontalChange;
-            grid.Height += e.VerticalChange;
-            Canvas.SetLeft(grid, Canvas.GetLeft(grid) + e.HorizontalChange);
-
             var component = grid.Children.Where(c => c is Component).First() as Component;
 
-            Canvas.SetLeft(component, Canvas.GetLeft(component) + e.HorizontalChange);
+            // Resize has to respect minimum width/height
+            var width = Math.Max(grid.Width - e.HorizontalChange, component.ComponentMinWidth + 2 * thumbSize);
 
-            component.Resize(percentageWidth, percentageHeight);
+            // $NOTE: at least now, grid.Height == component.Height
+            var height = grid.Height;
+            if (component.AnchorMode != ResizeAnchorMode.WidthOnly)
+            {
+                height = Math.Max(grid.Height + e.VerticalChange, component.ComponentMinHeight);
+            }
+
+            double deltaWidth = grid.Width - width;
+            double deltaHeight = grid.Height - height;
+
+            // Set TopLeft position
+            Canvas.SetLeft(grid, Canvas.GetLeft(grid) + deltaWidth);
+
+            // Set Grid Size
+            grid.Width = width;
+            grid.Height = height;
+
+            // Update Size for component
+            component.Resize((width - 2 * thumbSize) / component.Width, height / component.Height);
         }
 
         private void ThumbBottomRight_DragDelta(object sender, DragDeltaEventArgs e)
         {
             Thumb thumb = sender as Thumb;
             Grid grid = thumb.Parent as Grid;
-
-            double percentageWidth = (grid.Width + e.HorizontalChange) / grid.Width;
-            double percentageHeight = (grid.Height + e.VerticalChange) / grid.Height;
-
-            grid.Width += e.HorizontalChange;
-            grid.Height += e.VerticalChange;
-
             var component = grid.Children.Where(c => c is Component).First() as Component;
 
-            component.Resize(percentageWidth, percentageHeight);
+            // Resize has to respect minimum width/height
+            var width = Math.Max(grid.Width + e.HorizontalChange, component.ComponentMinWidth + 2 * thumbSize);
+
+            // $NOTE: at least now, grid.Height == component.Height
+            var height = grid.Height;
+            if (component.AnchorMode != ResizeAnchorMode.WidthOnly)
+            {
+                height = Math.Max(grid.Height + e.VerticalChange, component.ComponentMinHeight);
+            }
+
+            // Set Grid Size
+            grid.Width = width;
+            grid.Height = height;
+
+            // Update Size for component
+            component.Resize((width - 2 * thumbSize) / component.Width, height / component.Height);
         }
 
         private async void Instrument_Click(object sender, RoutedEventArgs e)
