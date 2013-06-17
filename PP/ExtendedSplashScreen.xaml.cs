@@ -48,7 +48,7 @@ namespace PP
                 try
                 {
                     // $TODO: replace this with real URL
-                    using (var resp = await client.PostAsync("http://microsoft.com/UploadInstrumentation", content))
+                    using (var resp = await client.PostAsync("http://paperprototype.cloudapp.net/Instrument", content))
                     {
                         if (resp.StatusCode == System.Net.HttpStatusCode.OK)
                         {
