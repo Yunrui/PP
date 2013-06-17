@@ -31,6 +31,8 @@ namespace PP
         public Record()
         {
             this.LogTime = DateTime.Now.ToString("yyyy-M-d H:m:s");
+            var ver = Windows.ApplicationModel.Package.Current.Id.Version;
+            this.Version = string.Format("{0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
         }
 
         [DataMember]
@@ -65,7 +67,7 @@ namespace PP
         /// $TODO: get version from app configuration
         /// </summary>
         [DataMember]
-        public Version Version
+        public string Version
         {
             get;
             set;

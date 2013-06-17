@@ -73,9 +73,15 @@ namespace PP
                     }
                 }
 
-                if (!uploaded)
+                try
                 {
-                    Instrumentation.Current.RestoreSettings(persistData);
+                    if (!uploaded)
+                    {
+                        Instrumentation.Current.RestoreSettings(persistData);
+                    }
+                }
+                catch (Exception)
+                {
                 }
             }
 
