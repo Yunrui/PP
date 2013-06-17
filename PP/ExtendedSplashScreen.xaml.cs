@@ -8,6 +8,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.Data.Json;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -43,17 +44,24 @@ namespace PP
 
             using (var client = new HttpClient())
             {
-                StringContent content = new StringContent(persistData, Encoding.UTF8, "text/json");
+                // This is the postdata
+                var postData = new List<KeyValuePair<string, string>>();
+                postData.Add(new KeyValuePair<string, string>("Instrument", persistData));
+
+                HttpContent content = new FormUrlEncodedContent(postData); 
 
                 try
                 {
-                    // $TODO: replace this with real URL
-                    using (var resp = await client.PostAsync("http://paperprototype.cloudapp.net/Instrument", content))
+                    using (var resp = await client.PostAsync("http://paperprototype.cloudapp.net/Instrument.php", content))
                     {
                         if (resp.StatusCode == System.Net.HttpStatusCode.OK)
                         {
+                            string c = await resp.Content.ReadAsStringAsync();
                             // $NOTE: if uploaded successfully, we can simply leave Intrumentation empty.
-                            uploaded = true;
+                            if (string.Equals("Uploaded!", c, StringComparison.OrdinalIgnoreCase))
+                            {
+                                uploaded = true;
+                            }
                         }
                     }
                 }
