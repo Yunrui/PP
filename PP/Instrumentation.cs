@@ -30,11 +30,11 @@ namespace PP
     {
         public Record()
         {
-            this.LogTime = DateTime.Now;
+            this.LogTime = DateTime.Now.ToString("yyyy-M-d H:m:s");
         }
 
         [DataMember]
-        public DateTime LogTime
+        public string LogTime
         {
             get;
             private set;

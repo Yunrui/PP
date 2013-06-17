@@ -29,7 +29,6 @@ namespace PP
         internal Rect splashImageRect; // Rect to store splash screen image coordinates.
         private SplashScreen splash; // Variable to hold the splash screen object.
         internal bool dismissed = false; // Variable to track splash screen dismissal status.
-        internal Frame rootFrame;
 
         public ExtendedSplashScreen()
         {
@@ -42,37 +41,42 @@ namespace PP
             bool uploaded = false;
             string persistData = await Instrumentation.Current.LoadPersistData();
 
-            using (var client = new HttpClient())
+            if (!string.IsNullOrWhiteSpace(persistData))
             {
-                // This is the postdata
-                var postData = new List<KeyValuePair<string, string>>();
-                postData.Add(new KeyValuePair<string, string>("Instrument", persistData));
-
-                HttpContent content = new FormUrlEncodedContent(postData); 
-
-                try
+                using (var client = new HttpClient())
                 {
-                    using (var resp = await client.PostAsync("http://paperprototype.cloudapp.net/Instrument.php", content))
+                    // This is the postdata
+                    var postData = new List<KeyValuePair<string, string>>();
+                    postData.Add(new KeyValuePair<string, string>("Instrument", persistData));
+
+                    HttpContent content = new FormUrlEncodedContent(postData);
+
+                    try
                     {
-                        if (resp.StatusCode == System.Net.HttpStatusCode.OK)
+                        using (var resp = await client.PostAsync("http://paperprototype.cloudapp.net/Instrument.php", content))
                         {
-                            string c = await resp.Content.ReadAsStringAsync();
-                            // $NOTE: if uploaded successfully, we can simply leave Intrumentation empty.
-                            if (string.Equals("Uploaded!", c, StringComparison.OrdinalIgnoreCase))
+                            string d = await resp.Content.ReadAsStringAsync();
+                            string et = d;
+                            if (resp.StatusCode == System.Net.HttpStatusCode.OK)
                             {
-                                uploaded = true;
+                                string c = await resp.Content.ReadAsStringAsync();
+                                // $NOTE: if uploaded successfully, we can simply leave Intrumentation empty.
+                                if (string.Equals("Uploaded!", c, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    uploaded = true;
+                                }
                             }
                         }
                     }
+                    catch (Exception)
+                    {
+                    }
                 }
-                catch (Exception)
-                {
-                }
-            }
 
-            if (!uploaded && !string.IsNullOrWhiteSpace(persistData))
-            {
-                Instrumentation.Current.RestoreSettings(persistData);
+                if (!uploaded)
+                {
+                    Instrumentation.Current.RestoreSettings(persistData);
+                }
             }
 
             this.Frame.Navigate(typeof(DrawingPage));
