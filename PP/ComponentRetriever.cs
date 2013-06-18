@@ -27,6 +27,10 @@ namespace PP
             {
                 return new Components.Label();
             }
+            else if (componentName.Equals("hyperlink"))
+            {
+                return new Components.HyperLink();
+            }
 
             return null;
         }

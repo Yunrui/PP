@@ -1,5 +1,5 @@
 ﻿<pp:Component
-    x:Class="PP.Components.Label"
+    x:Class="PP.Components.HyperLink"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PP.Components"
@@ -14,17 +14,23 @@
     MinHeight="32"
     MinWidth="100"
     Background="Red"
-    AnchorMode="WidthOnly"
+    AnchorMode="Full"
     >
 
-    <Grid Background="Azure">
+    <Grid>
         <TextBlock 
-            x:Name="TextBlock"
-            Foreground="Gray" 
-            FontSize="24" 
-            Text="Sample Label"
+            x:Name="TextBlock" 
             TextWrapping="Wrap"
-            DoubleTapped="TextBlock_DoubleTapped"/>
+            DoubleTapped="TextBlock_DoubleTapped"
+        >
+            <Underline
+                x:Name="UnderLine"
+                FontSize="24"
+                Foreground="Blue"
+            >
+                http://www.microsoft.com
+            </Underline>
+        </TextBlock>
 
         <Popup 
             x:Name="ConfigurePopup" 

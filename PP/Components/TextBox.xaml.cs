@@ -23,11 +23,24 @@ namespace PP.Components
             this.InitializeComponent();
         }
 
+        /// <summary>
+        /// 1. Show the popup
+        /// 2. Set the keyboard foucs to the configure text box
+        /// </summary>
+        /// <param name="sender">the sender param</param>
+        /// <param name="e">the event param</param>
         private void TextBlock_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             this.ConfigurePopup.IsOpen = true;
+
+            this.ConfigureTextBox.Focus(FocusState.Keyboard);
         }
 
+        /// <summary>
+        /// This method will be triggered by taped in any other place
+        /// </summary>
+        /// <param name="sender">the sender param</param>
+        /// <param name="e">the event param</param>
         private void ConfigurePopup_Closed(object sender, object e)
         {
             /*

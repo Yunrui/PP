@@ -19,7 +19,7 @@
         <ListView x:Name="toolbox" Grid.Column="0" DragItemsStarting="toolbox_DragItemsStarting" CanDragItems="True">
             <Image Source="Assets/Label.png" Width="128" Height="128"></Image>
             <Image Source="Assets/Textbox.png" Width="128" Height="128"></Image>
-            <Image Source="Assets/AlertBox.png" Width="128" Height="128"></Image>
+            <Image Source="Assets/HyperLink.png" Width="128" Height="128"></Image>
         </ListView>
 
         <Canvas  Name="panelcanvas" Grid.Column="2" AllowDrop="True" Drop="panelcanvas_Drop" HorizontalAlignment="Left" Height="712" Margin="0,28,0,0" VerticalAlignment="Top" Width="1206">

@@ -20,9 +20,9 @@ namespace PP.Components
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Label : Component
+    public sealed partial class HyperLink : Component
     {
-        public Label()
+        public HyperLink()
         {
             this.InitializeComponent();
         }
@@ -43,7 +43,13 @@ namespace PP.Components
              * This code is duped with the code in the TextBox.xaml.cs
              * I'll refactor it in the Week2
              */
-            this.TextBlock.Text = this.ConfigureTextBox.Text.Replace(Environment.NewLine, " ");
+            this.UnderLine.Inlines.Clear();
+
+            var newText = new Windows.UI.Xaml.Documents.Run();
+
+            newText.Text = this.ConfigureTextBox.Text.Replace(Environment.NewLine, " ");
+
+            this.UnderLine.Inlines.Add(newText);
         }
 
         /// <summary>

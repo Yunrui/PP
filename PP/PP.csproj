@@ -113,6 +113,9 @@
     </Compile>
     <Compile Include="Component.cs" />
     <Compile Include="ComponentRetriever.cs" />
+    <Compile Include="Components\HyperLink.xaml.cs">
+      <DependentUpon>HyperLink.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Components\Label.xaml.cs">
       <DependentUpon>Label.xaml</DependentUpon>
     </Compile>
@@ -141,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AlertBox.png" />
+    <Content Include="Assets\HyperLink.png" />
     <Content Include="Assets\Label.png" />
     <Content Include="Assets\Textbox.png" />
     <Content Include="Assets\Logo.png" />
@@ -157,6 +161,10 @@
     <Page Include="Common\StandardStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Components\HyperLink.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Components\Label.xaml">
       <SubType>Designer</SubType>
