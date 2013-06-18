@@ -31,6 +31,10 @@ namespace PP
             {
                 return new Components.HyperLink();
             }
+            else if (componentName.Equals("button"))
+            {
+                return new Components.Button();
+            }
 
             return null;
         }
