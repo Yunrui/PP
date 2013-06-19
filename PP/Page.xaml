@@ -11,23 +11,25 @@
 
     <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="140"></ColumnDefinition>
-            <ColumnDefinition Width="12"></ColumnDefinition>
+            <ColumnDefinition Width="155"></ColumnDefinition>
+            <ColumnDefinition Width="1"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="toolbox" Grid.Column="0" DragItemsStarting="toolbox_DragItemsStarting" CanDragItems="True">
-            <Image Source="Assets/Label.png" Width="120" Height="128"></Image>
-            <Image Source="Assets/Textbox.png" Width="120" Height="128"></Image>
-            <Image Source="Assets/HyperLink.png" Width="120" Height="128"></Image>
-            <Image Source="Assets/Button.png" Width="120" Height="128"></Image>
+        <ListView x:Name="toolbox" Grid.Column="0" DragItemsStarting="toolbox_DragItemsStarting" IsSwipeEnabled="False" CanDragItems="True" Padding="8,20,0,0" >
+            <Image Source="Assets/Label.png" Width="128" Height="128"></Image>
+            <Image Source="Assets/Textbox.png" Width="128" Height="128"></Image>
+            <Image Source="Assets/HyperLink.png" Width="128" Height="128"></Image>
+            <Image Source="Assets/Button.png" Width="128" Height="128"></Image>
         </ListView>
 
-        <Canvas  Name="panelcanvas" Grid.Column="2" AllowDrop="True" Drop="panelcanvas_Drop" HorizontalAlignment="Left" Height="712" Margin="0,28,0,0" VerticalAlignment="Top" Width="1206">
-            <Canvas.Background>
-                <ImageBrush ImageSource="Assets/WebPage.png" />
-            </Canvas.Background>
-        </Canvas>
+        
+            <Canvas  Name="panelcanvas" Grid.Column="2" AllowDrop="True" Drop="panelcanvas_Drop" HorizontalAlignment="Stretch" Margin="0,28,12,12" VerticalAlignment="Stretch" >
+                <Canvas.Background>
+                    <ImageBrush ImageSource="Assets/WebPage.png" />
+                </Canvas.Background>
+            </Canvas>
+
 
     </Grid>
     

@@ -17,7 +17,7 @@
     AnchorMode="WidthOnly"
     >
     
-    <Grid Background="Azure">
+    <Grid>
         <Border BorderThickness = "4" BorderBrush="Gray" x:Name="Border">
             <TextBlock 
                 x:Name="TextBlock" 

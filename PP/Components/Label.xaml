@@ -17,7 +17,7 @@
     AnchorMode="WidthOnly"
     >
 
-    <Grid Background="Azure">
+    <Grid>
         <TextBlock 
             x:Name="TextBlock"
             Foreground="Gray" 
