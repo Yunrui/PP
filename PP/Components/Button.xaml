@@ -17,17 +17,17 @@
     AnchorMode="Full"
     >
 
-    <Grid Background="Azure">
-        <Border BorderThickness="1" BorderBrush="Gray">
-            <Border BorderThickness = "4" BorderBrush="Gray" x:Name="Border">
+    <Grid>        
+        <Border BorderThickness="2" BorderBrush="LightGray">
+            <Border BorderThickness = "5" BorderBrush="Gray" x:Name="Border">
                 <TextBlock 
                     x:Name="TextBlock" 
                     Foreground="Gray" 
-                    FontSize="16" 
-                    Text="Button" 
+                    FontSize="16"
                     TextAlignment="Center"
+                    VerticalAlignment="Center"
                     Margin="1,1,1,0" 
-                    DoubleTapped="TextBlock_DoubleTapped" Height="20" VerticalAlignment="Top"
+                    DoubleTapped="TextBlock_DoubleTapped"  
                 />
             </Border>
         </Border>

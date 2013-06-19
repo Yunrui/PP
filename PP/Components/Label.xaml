@@ -22,7 +22,6 @@
             x:Name="TextBlock"
             Foreground="Gray" 
             FontSize="24" 
-            Text="Sample Label"
             TextWrapping="Wrap"
             DoubleTapped="TextBlock_DoubleTapped"/>
 

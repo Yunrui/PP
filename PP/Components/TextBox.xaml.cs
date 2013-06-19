@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PP.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,6 +22,9 @@ namespace PP.Components
         public TextBox()
         {
             this.InitializeComponent();
+
+            this.TextBlock.Text = Constants.DefaultTextBoxContext;
+            this.ConfigureTextBox.Text = this.TextBlock.Text;
         }
 
         /// <summary>

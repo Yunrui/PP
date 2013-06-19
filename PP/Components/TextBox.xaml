@@ -23,7 +23,6 @@
                 x:Name="TextBlock" 
                 Foreground="Gray" 
                 FontSize="18" 
-                Text="Sampe Text" 
                 Margin="1" 
                 DoubleTapped="TextBlock_DoubleTapped"
              />

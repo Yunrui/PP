@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PP.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,9 +26,10 @@ namespace PP.Components
         public Label()
         {
             this.InitializeComponent();
-        }
 
-        private const double LineHeight = 28.5;
+            this.TextBlock.Text = Constants.DefaultLabelContext;
+            this.ConfigureTextBox.Text = Constants.DefaultLabelContext;
+        }
 
         /// <summary>
         /// This method will be triggered by taped in any other place

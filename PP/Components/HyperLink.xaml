@@ -28,7 +28,6 @@
                 FontSize="24"
                 Foreground="Blue"
             >
-                http://www.microsoft.com
             </Underline>
         </TextBlock>
 

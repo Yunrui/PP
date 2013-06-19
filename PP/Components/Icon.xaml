@@ -1,0 +1,24 @@
+﻿<pp:Component
+    x:Class="PP.Components.Icon"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PP.Components"
+    xmlns:pp="using:PP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="130"
+    d:DesignWidth="130"
+    Height="130"
+    Width="130"
+    MinHeight="130"
+    MinWidth="130"
+    Background="Red"
+    AnchorMode="None"
+    >
+
+    <Grid Background="Azure">
+        <Ellipse Fill="#FFDBDAD1" HorizontalAlignment="Left" Height="120" Margin="5,5,0,0" Stroke="Black" VerticalAlignment="Top" Width="120" StrokeThickness="2"/>
+        <Path Data="M514.926,232.837 C508.261,218.426 474.628,201.493 464.279,249.464 C459.285,272.613 486.568,302.986 513.994,272.683" Fill="#FFDBDAD1" HorizontalAlignment="Left" Height="80.649" Margin="28.683,26.756,0,0" Stretch="Fill" Stroke="Black" StrokeThickness="5" UseLayoutRounding="False" VerticalAlignment="Top" Width="69.242"/>
+    </Grid>
+</pp:Component>

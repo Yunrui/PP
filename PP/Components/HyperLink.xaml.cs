@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PP.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,9 +26,21 @@ namespace PP.Components
         public HyperLink()
         {
             this.InitializeComponent();
+
+            this.updateUnderLine(Constants.DefaultHyperLinkContext);
+            this.ConfigureTextBox.Text = Constants.DefaultHyperLinkContext;
         }
 
-        private const double LineHeight = 28.5;
+        private void updateUnderLine(string context)
+        {
+            var newContext = new Windows.UI.Xaml.Documents.Run();
+
+            newContext.Text = context;
+
+            this.UnderLine.Inlines.Clear();
+
+            this.UnderLine.Inlines.Add(newContext);
+        }
 
         /// <summary>
         /// This method will be triggered by taped in any other place
@@ -43,13 +56,7 @@ namespace PP.Components
              * This code is duped with the code in the TextBox.xaml.cs
              * I'll refactor it in the Week2
              */
-            this.UnderLine.Inlines.Clear();
-
-            var newText = new Windows.UI.Xaml.Documents.Run();
-
-            newText.Text = this.ConfigureTextBox.Text.Replace(Environment.NewLine, " ");
-
-            this.UnderLine.Inlines.Add(newText);
+            this.updateUnderLine(this.ConfigureTextBox.Text.Replace(Environment.NewLine, " "));
         }
 
         /// <summary>
