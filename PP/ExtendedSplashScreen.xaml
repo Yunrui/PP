@@ -10,7 +10,7 @@
     <Grid Background="BlanchedAlmond">
         <StackPanel VerticalAlignment="Center">
         <Image x:Name="extendedSplashImage" Source="Assets/SplashScreen.png" Height="300" Width="620" VerticalAlignment="Center"  />
-        <TextBlock HorizontalAlignment="Center" Foreground="Chocolate"  FontSize="27">Loading...</TextBlock>
+        <TextBlock HorizontalAlignment="Center" Foreground="Gray"  FontSize="27">Create your own prototype in a minute!</TextBlock>
         </StackPanel>
     </Grid>
 
