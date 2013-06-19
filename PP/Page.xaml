@@ -16,7 +16,7 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="toolbox" Grid.Column="0" DragItemsStarting="toolbox_DragItemsStarting" IsSwipeEnabled="False" CanDragItems="True" Padding="8,20,0,0" >
+        <ListView x:Name="toolbox" Grid.Column="0" DragItemsStarting="toolbox_DragItemsStarting" CanDragItems="True" Padding="8,20,0,0" >
             <Image Source="Assets/Label.png" Width="128" Height="128"></Image>
             <Image Source="Assets/Textbox.png" Width="128" Height="128"></Image>
             <Image Source="Assets/HyperLink.png" Width="128" Height="128"></Image>
