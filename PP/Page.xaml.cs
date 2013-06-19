@@ -124,8 +124,13 @@
         {
             Grid grid = (sender as Component).Parent as Grid;
             TranslateTransform transform = grid.RenderTransform as TranslateTransform;
-            transform.X += e.Delta.Translation.X;
-            transform.Y += e.Delta.Translation.Y;
+
+            double left = - Canvas.GetLeft(grid);
+            // $TODO: consider margin later
+            transform.X = Math.Min(Math.Max(transform.X + e.Delta.Translation.X, left), this.panelcanvas.ActualWidth + left - grid.Width);
+
+            double top = -Canvas.GetTop(grid);
+            transform.Y = Math.Max(transform.Y + e.Delta.Translation.Y, top);
         }
 
         private void toolbox_DragItemsStarting(object sender, DragItemsStartingEventArgs e)
