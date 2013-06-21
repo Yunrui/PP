@@ -35,8 +35,14 @@ namespace PP
             {
                 return new Components.Button();
             }
-
-            return null;
+            else if (componentName.Equals("icon"))
+            {
+                return new Components.Icon();
+            }
+            else
+            {
+                throw new ArgumentException(string.Format("{0} can not be found."), componentName);
+            }
         }
     }
 }

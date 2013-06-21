@@ -37,7 +37,7 @@ namespace PP
 
         private ResizeAnchorMode anchorMode = ResizeAnchorMode.Full;
 
-        public void Resize(double percentageWidth, double percentageHeight)
+        public virtual void Resize(double percentageWidth, double percentageHeight)
         {
             this.Width *= percentageWidth;
             this.Height *= percentageHeight;

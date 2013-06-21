@@ -17,18 +17,19 @@
     AnchorMode="Full"
     >
 
-    <Grid>        
+    <Grid x:Name="Grid" >        
         <Border BorderThickness="2" BorderBrush="LightGray">
-            <Border BorderThickness = "5" BorderBrush="Gray" x:Name="Border">
-                <TextBlock 
-                    x:Name="TextBlock" 
-                    Foreground="Gray" 
-                    FontSize="16"
-                    TextAlignment="Center"
-                    VerticalAlignment="Center"
-                    Margin="1,1,1,0" 
-                    DoubleTapped="TextBlock_DoubleTapped"  
-                />
+            <Border BorderThickness = "5" BorderBrush="Gray" x:Name="Brod" >
+                <Grid Background="Transparent" DoubleTapped="TextBlock_DoubleTapped">
+                    <TextBlock 
+                        x:Name="TextBlock" 
+                        Foreground="Gray" 
+                        FontSize="16"
+                        TextAlignment="Center"
+                        VerticalAlignment="Center"
+                        Margin="1,1,1,0" 
+                    />
+                </Grid>
             </Border>
         </Border>
 
