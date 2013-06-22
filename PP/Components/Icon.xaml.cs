@@ -22,5 +22,16 @@ namespace PP.Components
         {
             this.InitializeComponent();
         }
+
+        public override void Resize(double percentageWidth, double percentageHeight)
+        {
+            base.Resize(percentageWidth, percentageHeight);
+
+            this.Ellipse.Height *= percentageHeight;
+            this.Path.Height *= percentageHeight;
+
+            this.Ellipse.Width *= percentageWidth;
+            this.Path.Width *= percentageWidth;
+        }
     }
 }

@@ -14,11 +14,11 @@
     MinHeight="130"
     MinWidth="130"
     Background="Red"
-    AnchorMode="None"
+    AnchorMode="Full"
     >
 
     <Grid Background="Azure">
-        <Ellipse Fill="#FFDBDAD1" HorizontalAlignment="Left" Height="120" Margin="5,5,0,0" Stroke="Black" VerticalAlignment="Top" Width="120" StrokeThickness="2"/>
-        <Path Data="M514.926,232.837 C508.261,218.426 474.628,201.493 464.279,249.464 C459.285,272.613 486.568,302.986 513.994,272.683" Fill="#FFDBDAD1" HorizontalAlignment="Left" Height="80.649" Margin="28.683,26.756,0,0" Stretch="Fill" Stroke="Black" StrokeThickness="5" UseLayoutRounding="False" VerticalAlignment="Top" Width="69.242"/>
+        <Ellipse x:Name="Ellipse" Fill="#FFDBDAD1" HorizontalAlignment="Left" Height="120" Margin="5,5,0,0" Stroke="Black" VerticalAlignment="Top" Width="120" StrokeThickness="2"/>
+        <Path x:Name="Path" Data="M514.926,232.837 C508.261,218.426 474.628,201.493 464.279,249.464 C459.285,272.613 486.568,302.986 513.994,272.683" Fill="#FFDBDAD1" HorizontalAlignment="Left" Height="80.649" Margin="28.683,26.756,0,0" Stretch="Fill" Stroke="Black" StrokeThickness="5" UseLayoutRounding="False" VerticalAlignment="Top" Width="69.242"/>
     </Grid>
 </pp:Component>
