@@ -39,6 +39,10 @@ namespace PP
             {
                 return new Components.Icon();
             }
+            else if (componentName.Equals("radiobutton"))
+            {
+                return new Components.RadioButton();
+            }
             else
             {
                 throw new ArgumentException(string.Format("{0} can not be found."), componentName);

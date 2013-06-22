@@ -33,7 +33,7 @@ namespace PP.Components
         /// </summary>
         /// <param name="sender">the sender param</param>
         /// <param name="e">the event param</param>
-        private void TextBlock_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        private void Grid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             this.ConfigurePopup.IsOpen = true;
 

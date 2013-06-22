@@ -15,5 +15,7 @@ namespace PP.Common
         public const string DefaultLabelContext = "Label";
 
         public const string DefaultTextBoxContext = "TextBox";
+
+        public const string DefaultRadioButton = "RadioButton";
     }
 }

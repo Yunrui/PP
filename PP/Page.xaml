@@ -22,6 +22,7 @@
             <Image Source="Assets/HyperLink.png" Width="120" Height="128"></Image>
             <Image Source="Assets/Button.png" Width="120" Height="128"></Image>
             <Image Source="Assets/Icon.png" Width="120" Height="128"></Image>
+            <Image Source="Assets/RadioButton.png" Width="120" Height="128"></Image>
         </ListView>
 
         

@@ -127,6 +127,9 @@
     <Compile Include="Components\Label.xaml.cs">
       <DependentUpon>Label.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Components\RadioButton.xaml.cs">
+      <DependentUpon>RadioButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Components\TextBox.xaml.cs">
       <DependentUpon>TextBox.xaml</DependentUpon>
     </Compile>
@@ -156,6 +159,7 @@
     <Content Include="Assets\HyperLink.png" />
     <Content Include="Assets\Icon.png" />
     <Content Include="Assets\Label.png" />
+    <Content Include="Assets\RadioButton.png" />
     <Content Include="Assets\Textbox.png" />
     <Content Include="Assets\Logo.png" />
     <Content Include="Assets\SmallLogo.png" />
@@ -185,6 +189,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Components\Label.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\RadioButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
