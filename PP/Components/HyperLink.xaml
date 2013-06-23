@@ -14,7 +14,7 @@
     MinHeight="32"
     MinWidth="100"
     Background="Red"
-    AnchorMode="Full"
+    AnchorMode="WidthOnly"
     >
 
     <Grid>

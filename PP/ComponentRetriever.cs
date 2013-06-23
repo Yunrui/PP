@@ -43,6 +43,10 @@ namespace PP
             {
                 return new Components.RadioButton();
             }
+            else if (componentName.Equals("checkbox"))
+            {
+                return new  Components.CheckBox();
+            }
             else
             {
                 throw new ArgumentException(string.Format("{0} can not be found."), componentName);

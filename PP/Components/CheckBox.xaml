@@ -1,5 +1,5 @@
 ﻿<pp:Component
- x:Class="PP.Components.RadioButton"
+ x:Class="PP.Components.CheckBox"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:PP.Components"
@@ -23,8 +23,8 @@
             <ColumnDefinition Width="120*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid DoubleTapped="Ellipse_DoubleTapped" Background="Transparent" >
-            <Ellipse 
+        <Grid DoubleTapped="Rectangle_DoubleTapped" Background="Transparent" >
+            <Rectangle 
                 x:Name="Ellipse" 
                 Height="24" 
                 Margin="4" 
@@ -32,15 +32,15 @@
                 Width="24" 
                 StrokeThickness="1"
             >
-            </Ellipse>
-        
+            </Rectangle>
+
             <Ellipse
                 x:Name="ChooseEllipse"
                 Visibility="Collapsed"
                 Height="10" 
                 Fill="Black" 
                 Width="10" 
-            >          
+            >
             </Ellipse>
         </Grid>
 
@@ -54,7 +54,7 @@
             DoubleTapped="TextBlock_DoubleTapped"
             Width="368"
         />
-        
+
         <Popup 
             x:Name="ConfigurePopup" 
             IsLightDismissEnabled="True"

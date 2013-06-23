@@ -17,17 +17,17 @@ using Windows.UI.Xaml.Navigation;
 
 namespace PP.Components
 {
- /// <summary>
+    /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class RadioButton : Component
+    public sealed partial class CheckBox : Component
     {
-        public RadioButton()
+        public CheckBox()
         {
             this.InitializeComponent();
 
-            this.TextBlock.Text = Constants.DefaultRadioButtonContext;
-            this.ConfigureTextBox.Text = Constants.DefaultRadioButtonContext;
+            this.TextBlock.Text = Constants.DefaultCheckBoxContext;
+            this.ConfigureTextBox.Text = Constants.DefaultCheckBoxContext;
         }
 
         public override void Resize(double percentageWidth, double percentageHeight)
@@ -67,7 +67,7 @@ namespace PP.Components
             this.ConfigureTextBox.Focus(FocusState.Keyboard);
         }
 
-        private void Ellipse_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        private void Rectangle_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             if (this.ChooseEllipse.Visibility == Visibility.Visible)
             {
