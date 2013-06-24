@@ -18,6 +18,9 @@
       <VisualElements DisplayName="PP" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="PP" ForegroundText="light" BackgroundColor="#464646">
         <DefaultTile ShowName="allLogos" />
         <SplashScreen Image="Assets/SplashScreen.png" BackgroundColor="blanchedAlmond" />
+        <InitialRotationPreference>
+          <Rotation Preference="landscape" />
+        </InitialRotationPreference>
       </VisualElements>
     </Application>
   </Applications>
