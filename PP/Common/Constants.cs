@@ -19,5 +19,7 @@ namespace PP.Common
         public const string DefaultRadioButtonContext = "RadioButton";
 
         public const string DefaultCheckBoxContext = "CheckBox";
+
+        public const string DeafultComboBoxContext = "ComboBox";
     }
 }

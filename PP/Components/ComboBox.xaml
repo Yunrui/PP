@@ -1,0 +1,73 @@
+﻿<pp:Component
+ x:Class="PP.Components.ComboBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PP.Components"
+    xmlns:pp="using:PP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="32"
+    d:DesignWidth="120"
+    Height="32"
+    Width="400"
+    MinHeight="32"
+    MinWidth="120"
+    Background="Red"
+    AnchorMode="WidthOnly"
+    >
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120*"/>
+            <ColumnDefinition Width="32" />
+        </Grid.ColumnDefinitions>
+
+        <Border BorderThickness = "2" BorderBrush="Black">
+            <TextBlock 
+                x:Name="TextBlock"
+                Foreground="Gray" 
+                FontSize="24" 
+                TextWrapping="Wrap"
+                Margin="0,4,0,0"
+                DoubleTapped="TextBlock_DoubleTapped"
+                Width="368"
+            />
+        </Border>
+
+        <Grid Background="Transparent" Grid.Column="1">
+            <Rectangle 
+                x:Name="Ellipse"  
+                Stroke="Black"  
+                StrokeThickness="2"
+            >
+            </Rectangle>
+
+            <Path Fill="Black" Stroke="Black" StrokeThickness="1">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure IsClosed="True" StartPoint="5, 10">
+                            <LineSegment Point="27, 10"/>
+                            <LineSegment Point="16, 25" />
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </Grid>
+
+        <Popup 
+            x:Name="ConfigurePopup" 
+            IsLightDismissEnabled="True"
+            Closed="ConfigurePopup_Closed">
+
+            <TextBox 
+                x:Name="ConfigureTextBox"             
+                Height="300"
+                Width="400"
+                Background="Beige"
+                TextWrapping="Wrap"
+                AcceptsReturn="True">
+            </TextBox>
+        </Popup>
+    </Grid>
+</pp:Component>

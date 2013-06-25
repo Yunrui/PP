@@ -47,6 +47,10 @@ namespace PP
             {
                 return new  Components.CheckBox();
             }
+            else if (componentName.Equals("combobox"))
+            {
+                return new Components.ComboBox();
+            }
             else
             {
                 throw new ArgumentException(string.Format("{0} can not be found."), componentName);

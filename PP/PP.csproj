@@ -121,6 +121,9 @@
     <Compile Include="Components\CheckBox.xaml.cs">
       <DependentUpon>CheckBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Components\ComboBox.xaml.cs">
+      <DependentUpon>ComboBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Components\HyperLink.xaml.cs">
       <DependentUpon>HyperLink.xaml</DependentUpon>
     </Compile>
@@ -160,6 +163,7 @@
     <Content Include="Assets\AlertBox.png" />
     <Content Include="Assets\Button.png" />
     <Content Include="Assets\CheckBox.png" />
+    <Content Include="Assets\ComboBox.png" />
     <Content Include="Assets\HyperLink.png" />
     <Content Include="Assets\Icon.png" />
     <Content Include="Assets\Label.png" />
@@ -185,6 +189,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Components\CheckBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\ComboBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
