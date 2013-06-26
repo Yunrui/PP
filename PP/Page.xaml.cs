@@ -64,13 +64,6 @@
                 Uri uri = (Uri)e.Data.Properties["SelectedComponent"];
                 Component component = ComponentRetriever.Retrieve(uri.LocalPath.ToString());
 
-                if (component == null)
-                {
-                    await Instrumentation.Current.Log("Wrong Control");
-
-                    return;
-                }
-
                 Point point = e.GetPosition(this.panelcanvas);
 
                 Grid grid = new Grid();
@@ -107,7 +100,7 @@
 
                 grid.Tapped += new TappedEventHandler(component_Tapped);
 
-                await Instrumentation.Current.Log(uri.ToString());
+                await Instrumentation.Current.Log(component.GetType().Name);
             }
             catch (Exception ex)
             {
@@ -274,10 +267,17 @@
             this.appBar.IsOpen = false;
         }
 
-        private void Top_Click(object sender, RoutedEventArgs e)
+        private async void Top_Click(object sender, RoutedEventArgs e)
         {
             var maxZIndex = this.panelcanvas.Children.Select(c => Canvas.GetZIndex(c)).Max();
             Canvas.SetZIndex(this.selectedElement, maxZIndex + 1);
+            await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "Foreground" });
+        }
+
+        private async void Empty_Click(object sender, RoutedEventArgs e)
+        {
+            this.panelcanvas.Children.Clear();
+            await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "Empty" });
         }
 
         /// <summary>

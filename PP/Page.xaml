@@ -41,6 +41,7 @@
             <Grid>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <Button Content="Instrument" Click="Instrument_Click" />
+                    <Button Content="Empty" Click="Empty_Click" />
                 </StackPanel>
 
                 <StackPanel Name="contextPanel" Orientation="Horizontal" HorizontalAlignment="Right">

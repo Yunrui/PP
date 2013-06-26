@@ -23,6 +23,7 @@ namespace PP
         UnhandledException = 1,
         ComponentUsed = 2,
         SessionDuration = 3,
+        Action = 4,
     }
 
     [DataContract]
@@ -63,9 +64,6 @@ namespace PP
             set;
         }
 
-        /// <summary>
-        /// $TODO: get version from app configuration
-        /// </summary>
         [DataMember]
         public string Version
         {
@@ -211,7 +209,7 @@ namespace PP
         }
 
 
-        private async Task Log(Record record)
+        public async Task Log(Record record)
         {
             record.UserId = await this.GetUserId();
             record.HardwareId = this.HardwareId;
