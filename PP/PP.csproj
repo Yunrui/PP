@@ -115,6 +115,9 @@
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="ComponentRetriever.cs" />
+    <Compile Include="Components\HorizontalLine.xaml.cs">
+      <DependentUpon>HorizontalLine.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Components\Button.xaml.cs">
       <DependentUpon>Button.xaml</DependentUpon>
     </Compile>
@@ -138,6 +141,9 @@
     </Compile>
     <Compile Include="Components\TextBox.xaml.cs">
       <DependentUpon>TextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\VerticalLine.xaml.cs">
+      <DependentUpon>VerticalLine.xaml</DependentUpon>
     </Compile>
     <Compile Include="ExtendedSplashScreen.xaml.cs">
       <DependentUpon>ExtendedSplashScreen.xaml</DependentUpon>
@@ -164,6 +170,7 @@
     <Content Include="Assets\Button.png" />
     <Content Include="Assets\CheckBox.png" />
     <Content Include="Assets\ComboBox.png" />
+    <Content Include="Assets\HorizontalLine.png" />
     <Content Include="Assets\HyperLink.png" />
     <Content Include="Assets\Icon.png" />
     <Content Include="Assets\Label.png" />
@@ -173,6 +180,7 @@
     <Content Include="Assets\SmallLogo.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\VerticalLine.png" />
     <Content Include="Assets\WebPage.png" />
   </ItemGroup>
   <ItemGroup>
@@ -183,6 +191,10 @@
     <Page Include="Common\StandardStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Components\HorizontalLine.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Components\Button.xaml">
       <SubType>Designer</SubType>
@@ -213,6 +225,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Components\TextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\VerticalLine.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

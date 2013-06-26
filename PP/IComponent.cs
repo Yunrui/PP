@@ -8,9 +8,10 @@ namespace PP
 {
     public enum ResizeAnchorMode
     {
-        Full = 0,
-        WidthOnly = 1,
-        None = 2
+        Full,
+        WidthOnly,
+        HeightOnly,
+        None
     }
 
     public interface IComponent

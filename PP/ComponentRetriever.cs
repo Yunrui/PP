@@ -51,6 +51,14 @@ namespace PP
             {
                 return new Components.ComboBox();
             }
+            else if (componentName.Equals("horizontalline"))
+            {
+                return new Components.HorizontalLine();
+            }
+            else if (componentName.Equals("verticalline"))
+            {
+                return new Components.VerticalLine();
+            }
             else
             {
                 throw new ArgumentException(string.Format("{0} can not be found."), componentName);
