@@ -157,7 +157,11 @@
             GetGridAndComponent(sender, out grid, out component);
 
             // Resize has to respect minimum width/height
-            var width = Math.Max(grid.Width - e.HorizontalChange, component.ComponentMinWidth + 2 * thumbSize);
+            var width = grid.Width;
+            if (component.AnchorMode != ResizeAnchorMode.HeightOnly)
+            {
+                width = Math.Max(grid.Width - e.HorizontalChange, component.ComponentMinWidth + 2 * thumbSize);
+            }
 
             // $NOTE: at least now, grid.Height == component.Height
             var height = grid.Height;
@@ -180,7 +184,11 @@
             GetGridAndComponent(sender, out grid, out component);
 
             // Resize has to respect minimum width/height
-            var width = Math.Max(grid.Width + e.HorizontalChange, component.ComponentMinWidth + 2 * thumbSize);
+            var width = grid.Width;
+            if (component.AnchorMode != ResizeAnchorMode.HeightOnly)
+            {
+                width = Math.Max(grid.Width + e.HorizontalChange, component.ComponentMinWidth + 2 * thumbSize);
+            }
 
             // $NOTE: at least now, grid.Height == component.Height
             var height = grid.Height;
@@ -202,7 +210,11 @@
             GetGridAndComponent(sender, out grid, out component);
 
             // Resize has to respect minimum width/height
-            var width = Math.Max(grid.Width - e.HorizontalChange, component.ComponentMinWidth + 2 * thumbSize);
+            var width = grid.Width;
+            if (component.AnchorMode != ResizeAnchorMode.HeightOnly)
+            {
+                width = Math.Max(grid.Width - e.HorizontalChange, component.ComponentMinWidth + 2 * thumbSize);
+            }
 
             // $NOTE: at least now, grid.Height == component.Height
             var height = grid.Height;
@@ -224,7 +236,11 @@
             GetGridAndComponent(sender, out grid, out component);
 
             // Resize has to respect minimum width/height
-            var width = Math.Max(grid.Width + e.HorizontalChange, component.ComponentMinWidth + 2 * thumbSize);
+            var width = grid.Width;
+            if (component.AnchorMode != ResizeAnchorMode.HeightOnly)
+            {
+                width = Math.Max(grid.Width + e.HorizontalChange, component.ComponentMinWidth + 2 * thumbSize);
+            }
 
             // $NOTE: at least now, grid.Height == component.Height
             var height = grid.Height;
