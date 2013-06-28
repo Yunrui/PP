@@ -18,13 +18,14 @@
     >
     
     <Grid>
-        <Border BorderThickness = "4" BorderBrush="Gray" x:Name="Border">
+        <Border BorderThickness = "2" BorderBrush="Black" x:Name="Border">
             <TextBlock 
                 x:Name="TextBlock" 
                 Foreground="Gray" 
                 FontSize="18" 
-                Margin="1" 
+                Margin="3,0,0,0" 
                 DoubleTapped="TextBlock_DoubleTapped"
+                VerticalAlignment="Center"
              />
         </Border>
 

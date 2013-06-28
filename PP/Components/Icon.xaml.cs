@@ -23,15 +23,22 @@ namespace PP.Components
             this.InitializeComponent();
         }
 
+        private const double DefaultEllipseSize = 120;
+        private const double DefaultIconSize = 50.4259;
+        private const double DefaultControlSize = 130;
+
         public override void Resize(double percentageWidth, double percentageHeight)
         {
             base.Resize(percentageWidth, percentageHeight);
 
-            this.Ellipse.Height *= percentageHeight;
-            this.Path.Height *= percentageHeight;
+            double alpha = Math.Min(this.Height, this.Width) / DefaultControlSize;
 
-            this.Ellipse.Width *= percentageWidth;
-            this.Path.Width *= percentageWidth;
+            this.Ellipse.Height = alpha * DefaultEllipseSize;
+            this.Ellipse.Width = alpha * DefaultEllipseSize;
+
+            this.PencilIcon.Height = alpha * DefaultIconSize;
+            this.PencilIcon.Width = alpha * DefaultIconSize;
         }
+
     }
 }

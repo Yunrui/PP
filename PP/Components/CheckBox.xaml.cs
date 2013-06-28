@@ -69,13 +69,13 @@ namespace PP.Components
 
         private void Rectangle_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
-            if (this.ChooseEllipse.Visibility == Visibility.Visible)
+            if (this.CheckIcon.Visibility == Visibility.Visible)
             {
-                this.ChooseEllipse.Visibility = Visibility.Collapsed;
+                this.CheckIcon.Visibility = Visibility.Collapsed;
             }
             else
             {
-                this.ChooseEllipse.Visibility = Visibility.Visible;
+                this.CheckIcon.Visibility = Visibility.Visible;
             }
         }
     }

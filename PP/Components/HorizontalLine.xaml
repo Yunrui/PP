@@ -20,10 +20,11 @@
     <Grid Background="Transparent">
         <Line
             x:Name="Line"
-            X1="10" Y1="4"
+            X1="1" Y1="4"
             X2="120" Y2="4"
             Stroke="Black"
             StrokeThickness="4"
         />
+        
     </Grid>
 </pp:Component>

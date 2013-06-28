@@ -26,22 +26,22 @@
         <Grid DoubleTapped="Rectangle_DoubleTapped" Background="Transparent" >
             <Rectangle 
                 x:Name="Ellipse" 
-                Height="24" 
+                Height="20" 
                 Margin="4" 
                 Stroke="Black" 
-                Width="24" 
-                StrokeThickness="1"
+                Width="20" 
+                StrokeThickness="1" RenderTransformOrigin="0.583,-0.083"
             >
             </Rectangle>
 
-            <Ellipse
-                x:Name="ChooseEllipse"
-                Visibility="Collapsed"
-                Height="10" 
+            <Path 
+                x:Name="CheckIcon"
+                Canvas.Left="15.0001" 
+                Stretch="Fill" 
                 Fill="Black" 
-                Width="10" 
-            >
-            </Ellipse>
+                Data="F1 M 23.7501,33.25L 34.8334,44.3333L 52.2499,22.1668L 56.9999,26.9168L 34.8334,53.8333L 19.0001,38L 23.7501,33.25 Z " 
+                UseLayoutRounding="False" 
+                RenderTransformOrigin="0.594,-1.455" Margin="3,0,3,6"/>
         </Grid>
 
         <TextBlock 
@@ -50,9 +50,9 @@
             Foreground="Gray" 
             FontSize="24" 
             TextWrapping="Wrap"
-            Margin="0,4,0,0"
             DoubleTapped="TextBlock_DoubleTapped"
             Width="368"
+            VerticalAlignment="Center"
         />
 
         <Popup 

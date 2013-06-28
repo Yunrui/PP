@@ -26,10 +26,10 @@
         <Grid DoubleTapped="Ellipse_DoubleTapped" Background="Transparent" >
             <Ellipse 
                 x:Name="Ellipse" 
-                Height="24" 
+                Height="20" 
                 Margin="4" 
                 Stroke="Black" 
-                Width="24" 
+                Width="20" 
                 StrokeThickness="1"
             >
             </Ellipse>
@@ -50,8 +50,8 @@
             Foreground="Gray" 
             FontSize="24" 
             TextWrapping="Wrap"
-            Margin="0,4,0,0"
             DoubleTapped="TextBlock_DoubleTapped"
+            VerticalAlignment="Center"
             Width="368"
         />
         

@@ -18,7 +18,17 @@
     >
 
     <Grid>
-        <Ellipse x:Name="Ellipse" Fill="#FFDBDAD1" HorizontalAlignment="Left" Height="120" Margin="5,5,0,0" Stroke="Black" VerticalAlignment="Top" Width="120" StrokeThickness="2"/>
-        <Path x:Name="Path" Data="M514.926,232.837 C508.261,218.426 474.628,201.493 464.279,249.464 C459.285,272.613 486.568,302.986 513.994,272.683" Fill="#FFDBDAD1" HorizontalAlignment="Left" Height="80.649" Margin="28.683,26.756,0,0" Stretch="Fill" Stroke="Black" StrokeThickness="5" UseLayoutRounding="False" VerticalAlignment="Top" Width="69.242"/>
+        <Ellipse x:Name="Ellipse" Fill="#FFDBDAD1"  Height="120"  Stroke="Black"  Width="120" StrokeThickness="2"/>
+
+        <Path
+            x:Name="PencilIcon"
+            Width="50.4259" 
+            Height="50.4259" 
+            Canvas.Left="19" 
+            Canvas.Top="6.57407" 
+            Stretch="Fill" 
+            Fill="#FF000000" 
+            Data="F1 M 21.5367,46.0076L 19,57L 29.3932,54.6016C 28.0768,50.6411 25.8696,47.0904 21.5367,46.0076 Z M 39,53L 69.4259,22.5741C 67.0871,17.8183 63.7005,13.6708 59.5673,10.4327L 31,39L 31,45L 39,45L 39,53 Z M 29,38L 57.8385,9.1615C 56.438,8.19625 54.9638,7.33038 53.4259,6.57407L 24,36L 24,38L 29,38 Z "
+        />
     </Grid>
 </pp:Component>
