@@ -23,7 +23,6 @@ namespace PP.Components
             this.InitializeComponent();
         }
 
-        private const double DefaultEllipseSize = 120;
         private const double DefaultIconSize = 50.4259;
         private const double DefaultControlSize = 130;
 
@@ -31,10 +30,10 @@ namespace PP.Components
         {
             base.Resize(percentageWidth, percentageHeight);
 
-            double alpha = Math.Min(this.Height, this.Width) / DefaultControlSize;
+            this.BorderRectangle.Height *= percentageHeight;
+            this.BorderRectangle.Width *= percentageWidth;
 
-            this.Ellipse.Height = alpha * DefaultEllipseSize;
-            this.Ellipse.Width = alpha * DefaultEllipseSize;
+            double alpha = Math.Min(this.Height, this.Width) / DefaultControlSize;
 
             this.PencilIcon.Height = alpha * DefaultIconSize;
             this.PencilIcon.Width = alpha * DefaultIconSize;

@@ -53,6 +53,7 @@ namespace PP.Components
              * But the textblock will not by design
              */
             this.TextBlock.Text = this.ConfigureTextBox.Text.Replace(Environment.NewLine, " ");
+            this.ConfigureTextBox.SelectAll();
         }
     }
 }

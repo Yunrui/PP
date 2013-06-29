@@ -65,6 +65,7 @@ namespace PP.Components
             this.ConfigurePopup.IsOpen = true;
 
             this.ConfigureTextBox.Focus(FocusState.Keyboard);
+            this.ConfigureTextBox.SelectAll();
         }
 
         private void Rectangle_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)

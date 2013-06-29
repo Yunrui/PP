@@ -44,7 +44,8 @@
                 Width="400"
                 Background="Beige"
                 TextWrapping="Wrap"
-                AcceptsReturn="True">
+                AcceptsReturn="True"
+            >
             </TextBox>
         </Popup>
     </Grid>
