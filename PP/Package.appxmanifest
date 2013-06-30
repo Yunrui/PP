@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="7eb77350-0192-46cd-a196-9dcbd8eb9744" Publisher="CN=yunsima" Version="0.1.1.0" />
+  <Identity Name="32005YunRuiSiMa.PP" Publisher="CN=5A8FDBBA-2BFD-44CC-8D84-FC011EC5F7D2" Version="0.1.1.7" />
   <Properties>
     <DisplayName>PP</DisplayName>
-    <PublisherDisplayName>yunsima</PublisherDisplayName>
+    <PublisherDisplayName>YunRui SiMa</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Prerequisites>
@@ -25,7 +25,6 @@
     </Application>
   </Applications>
   <Capabilities>
-    <Capability Name="enterpriseAuthentication" />
     <Capability Name="internetClient" />
   </Capabilities>
 </Package>
