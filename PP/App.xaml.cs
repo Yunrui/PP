@@ -9,6 +9,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ApplicationSettings;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -89,6 +90,17 @@ AKAA}");
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         }
 
+        void App_CommandsRequested(SettingsPane sender, SettingsPaneCommandsRequestedEventArgs args)
+        {
+            args.Request.ApplicationCommands.Add(new SettingsCommand("privacypolicy", "Privacy policy", OpenPrivacyPolicy));
+        }
+
+        private async void OpenPrivacyPolicy(IUICommand command)
+        {
+            Uri uri = new Uri("https://github.com/Yunrui/PP/wiki/privacy");
+            await Windows.System.Launcher.LaunchUriAsync(uri);
+        }
+
         void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
             Instrumentation.Current.Log(e.Exception, e.Exception.StackTrace);
@@ -140,6 +152,8 @@ AKAA}");
             }
             // Ensure the current window is active
             Window.Current.Activate();
+
+            SettingsPane.GetForCurrentView().CommandsRequested += App_CommandsRequested;
 
             Instrumentation.Current.SessionStart();
         }

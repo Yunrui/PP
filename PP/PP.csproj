@@ -184,6 +184,7 @@
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\VerticalLine.png" />
     <Content Include="Assets\WebPage.png" />
+    <Content Include="privacy.html" />
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
