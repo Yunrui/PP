@@ -340,11 +340,19 @@
     <MainPackageIdentityName>32005YunRuiSiMa.PP</MainPackageIdentityName>
     <ReservedNames>
       <ReservedName>PP</ReservedName>
+      <ReservedName>Paper Prototype</ReservedName>
+      <ReservedName>Fast Design</ReservedName>
+      <ReservedName>Quick Design</ReservedName>
     </ReservedNames>
   </ProductReservedInfo>
   <AccountPackageIdentityNames>
     <MainPackageIdentityName>32005YunRuiSiMa.LetsExchange</MainPackageIdentityName>
     <MainPackageIdentityName>32005YunRuiSiMa.6014883C6BA58</MainPackageIdentityName>
   </AccountPackageIdentityNames>
-  <PackageInfoList LandingUrl="https://appdev.microsoft.com:443/StorePortals/Developer/Catalog/ReleaseAnchor/4c8fb448-8884-4cb9-ab3d-356c83aaeeba" />
+  <PackageInfoList LandingUrl="https://appdev.microsoft.com:443/StorePortals/Developer/Catalog/ReleaseAnchor/4c8fb448-8884-4cb9-ab3d-356c83aaeeba">
+    <PackageInfo>
+      <PackageArchitecture>neutral</PackageArchitecture>
+      <PackageMaxArchitectureVersion>0.1.1.29</PackageMaxArchitectureVersion>
+    </PackageInfo>
+  </PackageInfoList>
 </StoreAssociation>
