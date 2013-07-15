@@ -224,7 +224,10 @@ namespace PP
             await this.Log(new Record()
             {
                 Event = EventId.SessionDuration,
+                // Duration for an active session
                 CustomA = (this.watcher.ElapsedMilliseconds / 1000).ToString(),
+                // Region of this device
+                CustomB = (new Windows.Globalization.GeographicRegion()).CodeTwoLetter,
             });
 
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<Record>));
