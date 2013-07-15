@@ -5,10 +5,12 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using Windows.ApplicationModel.DataTransfer;
     using Windows.Devices.Input;
     using Windows.Foundation;
     using Windows.Foundation.Collections;
     using Windows.Storage;
+    using Windows.Storage.Streams;
     using Windows.UI;
     using Windows.UI.Input;
     using Windows.UI.Input.Inking;
@@ -46,6 +48,17 @@
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
+            dataTransferManager.DataRequested += new TypedEventHandler<DataTransferManager, DataRequestedEventArgs>(this.ShareTextHandler);
+        }
+
+        private void ShareTextHandler(DataTransferManager sender, DataRequestedEventArgs e)
+        {
+            DataRequest request = e.Request;
+            request.Data.Properties.Title = "Share my prototype.";
+            // RandomAccessStreamReference imageStreamRef = RandomAccessStreamReference.CreateFromStream();
+            // request.Data.Properties.Thumbnail = imageStreamRef;
+            // request.Data.SetBitmap(imageStreamRef);
         }
 
         private void appBar_Opened(object sender, object e)
@@ -358,6 +371,11 @@
 
             // Update Size for component
             component.Resize((width - 2 * thumbSize) / component.Width, height / component.Height);
+        }
+
+        private void Share_Click(object sender, RoutedEventArgs e)
+        {
+            DataTransferManager.ShowShareUI();
         }
     }
 }
