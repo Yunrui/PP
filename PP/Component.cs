@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace PP
 {
@@ -41,6 +43,11 @@ namespace PP
         {
             this.Width *= percentageWidth;
             this.Height *= percentageHeight;
+        }
+
+        public virtual void Draw(WriteableBitmap bitmap, int left, int top)
+        {
+            bitmap.DrawRectangle(left, top,(int) (left + this.Width), (int) (top + this.Height), Colors.Black);
         }
     }
 }

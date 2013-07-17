@@ -1,27 +1,24 @@
 ﻿namespace PP
 {
-    using PP.Components;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Windows.Devices.Input;
+    using System.Threading.Tasks;
     using Windows.Foundation;
-    using Windows.Foundation.Collections;
+    using Windows.Graphics.Imaging;
     using Windows.Storage;
+    using Windows.Storage.Pickers;
+    using Windows.Storage.Streams;
     using Windows.UI;
-    using Windows.UI.Input;
-    using Windows.UI.Input.Inking;
     using Windows.UI.Popups;
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Controls.Primitives;
-    using Windows.UI.Xaml.Data;
     using Windows.UI.Xaml.Input;
     using Windows.UI.Xaml.Media;
     using Windows.UI.Xaml.Media.Imaging;
     using Windows.UI.Xaml.Navigation;
-    using Windows.UI.Xaml.Shapes;
 
     /// <summary>
     /// Page for design a prototype
@@ -30,6 +27,7 @@
     {
         private Grid selectedElement = null;
         private const int thumbSize = 15;
+        private const string BackgroundImageUri = "ms-appx:///Assets/WebPage.png";
 
         public DrawingPage()
         {
@@ -39,12 +37,19 @@
             this.appBar.Opened += appBar_Opened;
         }
 
+        public async Task<Stream> GenerateCanvasStream()
+        {
+            WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
+
+            return new MemoryStream(bitmap.ToByteArray());
+        }
+
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
         /// </summary>
         /// <param name="e">Event data that describes how this page was reached.  The Parameter
         /// property is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
 
@@ -359,5 +364,29 @@
             // Update Size for component
             component.Resize((width - 2 * thumbSize) / component.Width, height / component.Height);
         }
+
+        private async Task<WriteableBitmap> GenearteWriteableBitmap()
+        {
+            Uri backgroundImageUri = new Uri(BackgroundImageUri);
+
+            WriteableBitmap bitmap = await new WriteableBitmap(1, 1).FromContent(backgroundImageUri);
+
+            foreach (UIElement element in this.panelcanvas.Children)
+            {
+                Grid grid = element as Grid;
+                Component component = grid.Children.Where(c => c is Component).First() as Component;
+
+                component.Draw(bitmap, (int)Canvas.GetLeft(element), (int)Canvas.GetTop(element));
+            }
+
+            return bitmap;
+        }
+
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
+
+            await PPUtils.SaveImage(bitmap);
+        }      
     }
 }

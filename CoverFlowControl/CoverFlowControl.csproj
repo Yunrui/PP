@@ -111,6 +111,14 @@
     <Compile Include="CoverFlowItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="WriteableBitmapEx.WinRT">
+      <HintPath>..\packages\WriteableBitmapEx.1.0.8.0\lib\NetCore45\WriteableBitmapEx.WinRT.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>
