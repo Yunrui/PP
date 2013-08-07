@@ -208,7 +208,6 @@ namespace PP
             return this.userId;
         }
 
-
         public async Task Log(Record record)
         {
             record.UserId = await this.GetUserId();

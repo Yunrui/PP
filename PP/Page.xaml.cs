@@ -377,5 +377,20 @@
         {
             DataTransferManager.ShowShareUI();
         }
+
+        private async void Feedback_Click(object sender, RoutedEventArgs e)
+        {
+            var options = new Windows.System.LauncherOptions();
+            options.PreferredApplicationPackageFamilyName = "mail";
+            options.PreferredApplicationDisplayName = "mail";
+
+            var mailto = new Uri("mailto:?to=mylpis@hotmail.com&subject=Feedback for Paper Prototype&body=Please enter your feedback below, really appreciate your help!");
+            var result = await Windows.System.Launcher.LaunchUriAsync(mailto, options);
+
+            if (!result)
+            {
+                await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=32005YunRuiSiMa.PP_1ryedwe3pk4t4"));
+            }
+        }
     }
 }

@@ -46,6 +46,7 @@
                     <Button Content="Instrument" Click="Instrument_Click" />
                     <Button Content="Empty" Click="Empty_Click" />
                     <Button Content="Share" Click="Share_Click" />
+                    <Button Content="Feedback" Click="Feedback_Click" />
                 </StackPanel>
 
                 <StackPanel Name="contextPanel" Orientation="Horizontal" HorizontalAlignment="Right">
