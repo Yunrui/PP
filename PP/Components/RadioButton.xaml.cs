@@ -1,33 +1,49 @@
-﻿using PP.Common;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
-namespace PP.Components
+﻿namespace PP.Components
 {
- /// <summary>
+    using PP.Common;
+    using PP.Draw;
+    using System;
+    using Windows.UI;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Input;
+    using Windows.UI.Xaml.Media.Imaging;
+
+    /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class RadioButton : Component
     {
+        private const int CheckBoxSize = 18;
+        private const int RadiusOfChosenMark = 8;
+
         public RadioButton()
         {
             this.InitializeComponent();
 
             this.TextBlock.Text = Constants.DefaultRadioButtonContext;
             this.ConfigureTextBox.Text = Constants.DefaultRadioButtonContext;
+        }
+
+        public override void Draw(WriteableBitmap bitmap, int left, int top)
+        {
+            TextCollection.Instance.Collection.Add(
+                new TextItem()
+                {
+                    Context = this.TextBlock.Text,
+                    Left = left + DeltaPixel * 2 + CheckBoxSize,
+                    Top = top + DeltaPixel
+                }
+            );
+
+            int delta = (CheckBoxSize - RadiusOfChosenMark) / 2;
+
+            //draw the check box
+            bitmap.DrawEllipse(left, top + DeltaPixel * 2, left + CheckBoxSize, top + DeltaPixel * 2 + CheckBoxSize, Colors.Black);
+
+            if (this.ChooseEllipse.Visibility == Visibility.Visible)
+            {
+                bitmap.FillEllipse(left + delta, top + DeltaPixel * 2 + delta, left + CheckBoxSize - delta, top + DeltaPixel * 2 + CheckBoxSize - delta, Colors.Black);
+            }
         }
 
         public override void Resize(double percentageWidth, double percentageHeight)

@@ -1,22 +1,13 @@
-﻿using PP.Common;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
-namespace PP.Components
+﻿namespace PP.Components
 {
+    using PP.Common;
+    using PP.Draw;
+    using System;
+    using Windows.UI;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Input;
+    using Windows.UI.Xaml.Media.Imaging;
+
     public sealed partial class Button : Component
     {
         public Button()
@@ -25,6 +16,38 @@ namespace PP.Components
 
             this.TextBlock.Text = Constants.DefaultButtonContext;
             this.ConfigureTextBox.Text = Constants.DefaultButtonContext;
+        }
+
+        public override void Draw(WriteableBitmap bitmap, int left, int top)
+        {
+            /*
+             * As the api doesn't support the text alignment, so we will add some space to make it looks like align:center
+             * we calc the signle text width runtime to make sure we can support the resize of text later
+             */
+            string context = this.TextBlock.Text;
+
+            double singleWidth = this.TextBlock.ActualWidth / this.TextBlock.Text.Length;
+
+            int spaceLength = (int) Math.Floor( (this.ActualWidth - this.TextBlock.ActualWidth) / (2 * singleWidth) ) + 1;
+
+            for (int i = 0; i <= spaceLength; i++)
+            {
+                context = " " + context;
+            }
+
+            TextCollection.Instance.Collection.Add(
+                new TextItem()
+                {
+                    Context = context,
+                    Left = left + 2 * DeltaPixel,
+                    Top = top + 2 * DeltaPixel
+                }
+            );
+
+            bitmap.DrawRectangle(left, top, (int)(left + this.Width), (int)(top + this.Height), Colors.Gray);
+            bitmap.DrawRectangle(left + DeltaPixel, top + DeltaPixel, (int)(left + this.Width - DeltaPixel), (int)(top + this.Height - DeltaPixel), Colors.Black);
+
+            base.Draw(bitmap, left, top);
         }
 
         /// <summary>

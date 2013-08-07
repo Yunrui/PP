@@ -108,14 +108,18 @@
       <Project>{3064713c-b7c1-4d9b-97f5-b70de0a7b60c}</Project>
       <Name>CoverFlowControl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WindowsRuntimeComponent1\WindowsRuntimeComponent1.vcxproj">
+      <Project>{6460b68f-8ebc-4f99-a47f-2a394817cfcd}</Project>
+      <Name>WindowsRuntimeComponent1</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\Constants.cs" />
-    <Compile Include="Component.cs" />
-    <Compile Include="ComponentRetriever.cs" />
+    <Compile Include="Components\Component.cs" />
+    <Compile Include="Components\ComponentRetriever.cs" />
     <Compile Include="Components\HorizontalLine.xaml.cs">
       <DependentUpon>HorizontalLine.xaml</DependentUpon>
     </Compile>
@@ -146,10 +150,11 @@
     <Compile Include="Components\VerticalLine.xaml.cs">
       <DependentUpon>VerticalLine.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Draw\TextCollection.cs" />
     <Compile Include="ExtendedSplashScreen.xaml.cs">
       <DependentUpon>ExtendedSplashScreen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IComponent.cs" />
+    <Compile Include="Components\IComponent.cs" />
     <Compile Include="Instrumentation.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -165,7 +170,6 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="packages.config" />
-    <None Include="PP_StoreKey.pfx" />
     <None Include="PP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +189,7 @@
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Assets\VerticalLine.png" />
     <Content Include="Assets\WebPage.png" />
+    <Content Include="Assets\IconForSave.png" />
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -260,6 +265,7 @@
       <HintPath>..\packages\WriteableBitmapEx.1.0.8.0\lib\NetCore45\WriteableBitmapEx.WinRT.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
   </PropertyGroup>

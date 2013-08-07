@@ -1,14 +1,15 @@
 ﻿namespace PP
 {
+    using PP.Components;
+    using PP.Draw;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using Windows.ApplicationModel.Core;
     using Windows.Foundation;
-    using Windows.Graphics.Imaging;
     using Windows.Storage;
-    using Windows.Storage.Pickers;
     using Windows.Storage.Streams;
     using Windows.UI;
     using Windows.UI.Popups;
@@ -19,6 +20,7 @@
     using Windows.UI.Xaml.Media;
     using Windows.UI.Xaml.Media.Imaging;
     using Windows.UI.Xaml.Navigation;
+    using WindowsRuntimeComponent1;
 
     /// <summary>
     /// Page for design a prototype
@@ -95,11 +97,13 @@
 
                 grid.Children.Add(component);
 
+                grid.RenderTransform = new TranslateTransform();
+
                 // Set Manipulation to Component instead of Grid
                 // Otherwise, Resizing will also move components
                 component.ManipulationMode = ManipulationModes.All;
                 component.ManipulationDelta += grid_ManipulationDelta;
-                grid.RenderTransform = new TranslateTransform();
+                
 
                 panelcanvas.Children.Add(grid);
 
@@ -365,6 +369,10 @@
             component.Resize((width - 2 * thumbSize) / component.Width, height / component.Height);
         }
 
+        /// <summary>
+        /// Getnerate the writeable bitmap, and register the text.
+        /// </summary>
+        /// <returns></returns>
         private async Task<WriteableBitmap> GenearteWriteableBitmap()
         {
             Uri backgroundImageUri = new Uri(BackgroundImageUri);
@@ -376,7 +384,18 @@
                 Grid grid = element as Grid;
                 Component component = grid.Children.Where(c => c is Component).First() as Component;
 
-                component.Draw(bitmap, (int)Canvas.GetLeft(element), (int)Canvas.GetTop(element));
+                int left = (int)Canvas.GetLeft(grid);
+                int top = (int)Canvas.GetTop(grid);
+
+                TranslateTransform translateTransform = grid.RenderTransform as TranslateTransform;
+
+                if (translateTransform != null)
+                {
+                    left += (int) translateTransform.X;
+                    top += (int) translateTransform.Y;
+                }
+
+                component.Draw(bitmap, left, top);
             }
 
             return bitmap;
@@ -385,6 +404,27 @@
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
+
+            await PPUtils.SaveImage(bitmap, true);
+
+            //// draw text
+            D2DWraper d2dManager = new D2DWraper();
+
+            d2dManager.Initialize(CoreApplication.MainView.CoreWindow);
+
+            IRandomAccessStream randStream = null;
+            
+            foreach (TextItem item in TextCollection.Instance.Collection)
+            {
+                randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, "tmpImage.jpg"), item.Left, item.Top, item.IsHyperLink).CloneStream();
+
+                if (randStream != null)
+                {
+                    bitmap.SetSource(randStream);
+                }
+
+                await PPUtils.SaveImage(bitmap, true);
+            }
 
             await PPUtils.SaveImage(bitmap);
         }      

@@ -1,27 +1,20 @@
-﻿using PP.Common;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
-namespace PP.Components
+﻿namespace PP.Components
 {
+    using PP.Common;
+    using PP.Draw;
+    using System;
+    using Windows.UI;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Input;
+    using Windows.UI.Xaml.Media.Imaging;
+
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class CheckBox : Component
     {
+        private const int CheckBoxSize = 18;
+
         public CheckBox()
         {
             this.InitializeComponent();
@@ -35,6 +28,46 @@ namespace PP.Components
             base.Resize(percentageWidth, percentageHeight);
 
             this.TextBlock.Width = this.Width - 32;
+        }
+
+        public override void Draw(WriteableBitmap bitmap, int left, int top)
+        {
+            TextCollection.Instance.Collection.Add(
+                new TextItem()
+                {
+                    Context = this.TextBlock.Text,
+                    Left = left + DeltaPixel * 2 + CheckBoxSize,
+                    Top = top + DeltaPixel
+                }
+            );
+
+            //draw the check box
+
+            bitmap.DrawRectangle(left, top + DeltaPixel * 2, left + CheckBoxSize, top + DeltaPixel * 2 + CheckBoxSize, Colors.Black);
+
+            //draw the correct mark when it's visible
+            if (this.CheckIcon.Visibility == Visibility.Visible)
+            {
+                // the transform from the (0,0)
+                int dotX = left;
+                int dotY = top + DeltaPixel * 2;
+
+                bitmap.DrawLine(
+                    dotX, 
+                    dotY + CheckBoxSize / 2,
+                    dotX + CheckBoxSize / 2,
+                    dotY + CheckBoxSize,
+                    Colors.Black
+                );
+
+                bitmap.DrawLine(
+                    dotX + CheckBoxSize / 2,
+                    dotY + CheckBoxSize,
+                    dotX + CheckBoxSize,
+                    dotY,
+                    Colors.Black
+                );
+            }
         }
 
         /// <summary>

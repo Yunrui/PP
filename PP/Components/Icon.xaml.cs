@@ -1,30 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
-namespace PP.Components
+﻿namespace PP.Components
 {
+    using System;
+    using Windows.UI.Xaml.Media.Imaging;
+
     public sealed partial class Icon : Component
     {
+        private const double DefaultIconSize = 50.4259;
+        private const double DefaultControlSize = 130;
+
         public Icon()
         {
             this.InitializeComponent();
         }
-
-        private const double DefaultIconSize = 50.4259;
-        private const double DefaultControlSize = 130;
 
         public override void Resize(double percentageWidth, double percentageHeight)
         {
@@ -37,6 +24,10 @@ namespace PP.Components
 
             this.PencilIcon.Height = alpha * DefaultIconSize;
             this.PencilIcon.Width = alpha * DefaultIconSize;
+        }
+
+        public override void Draw(WriteableBitmap bitmap, int left, int top)
+        {
         }
 
     }

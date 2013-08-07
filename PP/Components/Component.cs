@@ -11,6 +11,8 @@ namespace PP
 {
     public abstract class Component : UserControl, IComponent
     {
+        protected const int DeltaPixel = 2;
+
         public string ComponentName
         {
             get { return this.GetType().FullName; }
@@ -47,7 +49,6 @@ namespace PP
 
         public virtual void Draw(WriteableBitmap bitmap, int left, int top)
         {
-            bitmap.DrawRectangle(left, top,(int) (left + this.Width), (int) (top + this.Height), Colors.Black);
         }
     }
 }
