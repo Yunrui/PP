@@ -27,6 +27,9 @@
     /// </summary>
     public sealed partial class DrawingPage : Page
     {
+        public static WriteableBitmap IconBitmap;
+        private const string IconImageUri = "ms-appx:///Assets/IconForSave.png";
+
         private Grid selectedElement = null;
         private const int thumbSize = 15;
         private const string BackgroundImageUri = "ms-appx:///Assets/WebPage.png";
@@ -375,6 +378,9 @@
         /// <returns></returns>
         private async Task<WriteableBitmap> GenearteWriteableBitmap()
         {
+            Uri iconImageUri = new Uri(IconImageUri);
+            IconBitmap = await new WriteableBitmap(1, 1).FromContent(iconImageUri);
+
             Uri backgroundImageUri = new Uri(BackgroundImageUri);
 
             WriteableBitmap bitmap = await new WriteableBitmap(1, 1).FromContent(backgroundImageUri);
@@ -395,7 +401,14 @@
                     top += (int) translateTransform.Y;
                 }
 
-                component.Draw(bitmap, left, top);
+                if (component is Icon)
+                {
+                    (component as Icon).Draw(bitmap, left, top, IconBitmap);
+                }
+                else
+                {
+                    component.Draw(bitmap, left, top);
+                }
             }
 
             return bitmap;

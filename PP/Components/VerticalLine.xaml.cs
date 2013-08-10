@@ -16,7 +16,7 @@
 
         public override void Draw(WriteableBitmap bitmap, int left, int top)
         {
-            bitmap.DrawLine(left, top, (int)(left + this.Width), (int)(top + this.Height), Colors.Black);
+            bitmap.FillRectangle(left, top, (int)(left + DeltaPixel), (int)(top + this.Height), Colors.Black);
         }
 
         public override void Resize(double percentageWidth, double percentageHeight)

@@ -435,6 +435,9 @@ InMemoryRandomAccessStream^  WindowsRuntimeComponent1::D2DWraper::DrawTextToImag
 	
 	if (isHyperLink)
 	{
+		DWRITE_TEXT_RANGE textRange = {1, text->Length()};
+		m_textLayout->SetUnderline(TRUE, textRange);
+
 		m_d2dContext->DrawTextLayout(
 			Point2F(left, top),
 			m_textLayout.Get(),

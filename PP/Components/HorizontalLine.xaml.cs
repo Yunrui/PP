@@ -23,7 +23,7 @@
 
         public override void Draw(WriteableBitmap bitmap, int left, int top)
         {
-            bitmap.DrawLine(left, top, (int) ( left + this.Width ), (int) (top + this.Height), Colors.Black);
+            bitmap.FillRectangle(left, top, (int) ( left + this.Width ), (int) (top + DeltaPixel), Colors.Black);
         }
     }
 }

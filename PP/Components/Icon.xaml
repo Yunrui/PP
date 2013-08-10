@@ -7,18 +7,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="130"
-    d:DesignWidth="130"
-    Height="130"
-    Width="130"
+    d:DesignHeight="100"
+    d:DesignWidth="100"
+    Height="100"
+    Width="100"
     MinHeight="13"
     MinWidth="13"
-    Background="Red"
     AnchorMode="Full"
     >
 
     <Grid>
-        <Rectangle x:Name="BorderRectangle" Fill="Transparent"  Height="120"  Stroke="Black"  Width="120" StrokeThickness="2"/>
+        <Rectangle x:Name="BorderRectangle" Fill="Transparent"  Height="100"  Stroke="Black"  Width="100" StrokeThickness="2"/>
 
         <Path
             x:Name="PencilIcon"

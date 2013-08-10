@@ -51,8 +51,6 @@ namespace WindowsRuntimeComponent1
 		Microsoft::WRL::ComPtr<ID2D1DeviceContext>     m_d2dContext;
 		Microsoft::WRL::ComPtr<ID2D1Bitmap1>           m_d2dTargetBitmap;
 
-
-
 		// DirectWrite & Windows Imaging Component Objects
 		Microsoft::WRL::ComPtr<IDWriteFactory1>        m_dwriteFactory;
 		Microsoft::WRL::ComPtr<ID2D1SolidColorBrush>    m_whiteBrush;

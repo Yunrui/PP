@@ -13,6 +13,8 @@
 
     public static class PPUtils
     {
+
+
         public async static Task SaveImage(WriteableBitmap src, bool saveToLocal = false)
         {
             StorageFile savedItem = null;
