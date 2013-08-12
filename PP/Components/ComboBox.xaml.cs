@@ -1,27 +1,30 @@
-﻿using PP.Common;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-
-namespace PP.Components
+﻿namespace PP.Components
 {
+    using PP.Common;
+    using PP.Draw;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using Windows.Foundation;
+    using Windows.Foundation.Collections;
+    using Windows.UI;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Controls;
+    using Windows.UI.Xaml.Controls.Primitives;
+    using Windows.UI.Xaml.Data;
+    using Windows.UI.Xaml.Input;
+    using Windows.UI.Xaml.Media;
+    using Windows.UI.Xaml.Media.Imaging;
+    using Windows.UI.Xaml.Navigation;
+
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class ComboBox : Component
     {
+        private int BoxSize = 18;
+
         public ComboBox()
         {
             this.InitializeComponent();
@@ -35,6 +38,47 @@ namespace PP.Components
             base.Resize(percentageWidth, percentageHeight);
 
             this.TextBlock.Width = this.Width - 32;
+        }
+
+        public override void Draw(WriteableBitmap bitmap, int left, int top)
+        {
+            this.BoxSize = (int) this.Height;
+
+            TextCollection.Instance.Collection.Add(
+                new TextItem()
+                {
+                    Context = this.TextBlock.Text,
+                    Left = left + DeltaPixel,
+                    Top = top + DeltaPixel
+                }
+            );
+
+            // draw textbox of the context
+            bitmap.DrawRectangle(left, top, (int) (left + this.Width - BoxSize), (int)( top + this.Height), Colors.Black);
+
+            int dotX = (int) (left + this.Width - BoxSize);
+            int dotY = top;
+
+            // draw the box
+            bitmap.DrawRectangle(
+                dotX, 
+                dotY,
+                dotX + BoxSize,
+                dotY + BoxSize,
+                Colors.Black);
+
+            double heightRateTop = 0.27;
+            double heightRateBottom = 0.918;
+
+            bitmap.FillTriangle(
+                dotX,
+                (int)(dotY + heightRateTop * BoxSize),
+                dotX + BoxSize,
+                (int)(dotY + heightRateTop * BoxSize),
+                dotX + BoxSize / 2,
+                (int) (dotY + heightRateBottom * BoxSize),
+                Colors.Black
+            );
         }
 
         /// <summary>

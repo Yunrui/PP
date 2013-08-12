@@ -1,16 +1,19 @@
 ﻿using PP.Common;
+using PP.Draw;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -25,6 +28,26 @@ namespace PP.Components
 
             this.TextBlock.Text = Constants.DefaultTextBoxContext;
             this.ConfigureTextBox.Text = this.TextBlock.Text;
+        }
+
+        /// <summary>
+        /// Draw the TextBox control to the bitmap
+        /// </summary>
+        /// <param name="bitmap">the target to draw the control</param>
+        /// <param name="left">the x-axis of the left</param>
+        /// <param name="top">the y-axis of the top</param>
+        public override void Draw(WriteableBitmap bitmap, int left, int top)
+        {
+            TextCollection.Instance.Collection.Add(
+                new TextItem()
+                {
+                    Context = this.TextBlock.Text,
+                    Left = left + DeltaPixel,
+                    Top = top + DeltaPixel
+                }
+            );
+
+            bitmap.DrawRectangle(left, top, (int)(left + this.Width), (int)(top + this.Height), Colors.Black);
         }
 
         /// <summary>

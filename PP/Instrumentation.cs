@@ -111,9 +111,6 @@ namespace PP
         {
         }
 
-        [DllImport("kernel32.dll")]
-        internal static extern void GetNativeSystemInfo(ref SystemInfo lpSystemInfo);
-
         public static Instrumentation Current
         {
             get

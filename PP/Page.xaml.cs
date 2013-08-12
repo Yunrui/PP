@@ -1,37 +1,40 @@
 ﻿namespace PP
 {
     using PP.Components;
+    using PP.Draw;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using Windows.ApplicationModel.DataTransfer;
     using Windows.Devices.Input;
+    using System.Threading.Tasks;
+    using Windows.ApplicationModel.Core;
     using Windows.Foundation;
-    using Windows.Foundation.Collections;
     using Windows.Storage;
     using Windows.Storage.Streams;
     using Windows.UI;
-    using Windows.UI.Input;
-    using Windows.UI.Input.Inking;
     using Windows.UI.Popups;
     using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Controls.Primitives;
-    using Windows.UI.Xaml.Data;
     using Windows.UI.Xaml.Input;
     using Windows.UI.Xaml.Media;
     using Windows.UI.Xaml.Media.Imaging;
     using Windows.UI.Xaml.Navigation;
-    using Windows.UI.Xaml.Shapes;
+    using WindowsRuntimeComponent1;
 
     /// <summary>
     /// Page for design a prototype
     /// </summary>
     public sealed partial class DrawingPage : Page
     {
+        public static WriteableBitmap IconBitmap;
+        private const string IconImageUri = "ms-appx:///Assets/IconForSave.png";
+
         private Grid selectedElement = null;
         private const int thumbSize = 15;
+        private const string BackgroundImageUri = "ms-appx:///Assets/WebPage.png";
 
         public DrawingPage()
         {
@@ -39,6 +42,12 @@
 
             this.panelcanvas.Tapped += canvas_Tapped;
             this.appBar.Opened += appBar_Opened;
+        }
+
+        public async Task<Stream> GenerateCanvasStream()
+        {
+            WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
+            return new MemoryStream(bitmap.ToByteArray());
         }
 
         /// <summary>
@@ -52,13 +61,30 @@
             dataTransferManager.DataRequested += new TypedEventHandler<DataTransferManager, DataRequestedEventArgs>(this.ShareTextHandler);
         }
 
-        private void ShareTextHandler(DataTransferManager sender, DataRequestedEventArgs e)
+        private async void ShareTextHandler(DataTransferManager sender, DataRequestedEventArgs e)
         {
             DataRequest request = e.Request;
             request.Data.Properties.Title = "Share my prototype.";
-            // RandomAccessStreamReference imageStreamRef = RandomAccessStreamReference.CreateFromStream();
-            // request.Data.Properties.Thumbnail = imageStreamRef;
-            // request.Data.SetBitmap(imageStreamRef);
+
+            DataRequestDeferral deferral = request.GetDeferral();
+            try
+            {
+                var stream = await this.GenerateCanvasStream();
+                IRandomAccessStream inMemoryStream = new InMemoryRandomAccessStream();
+                using (var inputStream = stream.AsInputStream())
+                {
+                    await RandomAccessStream.CopyAsync(inputStream, inMemoryStream);
+                }
+                inMemoryStream.Seek(0);
+
+                RandomAccessStreamReference imageStreamRef = RandomAccessStreamReference.CreateFromStream(inMemoryStream);
+                request.Data.Properties.Thumbnail = imageStreamRef;
+                request.Data.SetBitmap(imageStreamRef);
+            }
+            finally
+            {
+                deferral.Complete();
+            }
         }
 
         private void appBar_Opened(object sender, object e)
@@ -103,11 +129,13 @@
 
                 grid.Children.Add(component);
 
+                grid.RenderTransform = new TranslateTransform();
+
                 // Set Manipulation to Component instead of Grid
                 // Otherwise, Resizing will also move components
                 component.ManipulationMode = ManipulationModes.All;
                 component.ManipulationDelta += grid_ManipulationDelta;
-                grid.RenderTransform = new TranslateTransform();
+                
 
                 panelcanvas.Children.Add(grid);
 
@@ -392,5 +420,75 @@
                 await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=32005YunRuiSiMa.PP_1ryedwe3pk4t4"));
             }
         }
+
+        /// <summary>
+        /// Getnerate the writeable bitmap, and register the text.
+        /// </summary>
+        /// <returns></returns>
+        private async Task<WriteableBitmap> GenearteWriteableBitmap()
+        {
+            Uri iconImageUri = new Uri(IconImageUri);
+            IconBitmap = await new WriteableBitmap(1, 1).FromContent(iconImageUri);
+
+            Uri backgroundImageUri = new Uri(BackgroundImageUri);
+
+            WriteableBitmap bitmap = await new WriteableBitmap(1, 1).FromContent(backgroundImageUri);
+
+            foreach (UIElement element in this.panelcanvas.Children)
+            {
+                Grid grid = element as Grid;
+                Component component = grid.Children.Where(c => c is Component).First() as Component;
+
+                int left = (int)Canvas.GetLeft(grid);
+                int top = (int)Canvas.GetTop(grid);
+
+                TranslateTransform translateTransform = grid.RenderTransform as TranslateTransform;
+
+                if (translateTransform != null)
+                {
+                    left += (int) translateTransform.X;
+                    top += (int) translateTransform.Y;
+                }
+
+                if (component is Icon)
+                {
+                    (component as Icon).Draw(bitmap, left, top, IconBitmap);
+                }
+                else
+                {
+                    component.Draw(bitmap, left, top);
+                }
+            }
+
+            return bitmap;
+        }
+
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
+
+            await PPUtils.SaveImage(bitmap, true);
+
+            //// draw text
+            D2DWraper d2dManager = new D2DWraper();
+
+            d2dManager.Initialize(CoreApplication.MainView.CoreWindow);
+
+            IRandomAccessStream randStream = null;
+            
+            foreach (TextItem item in TextCollection.Instance.Collection)
+            {
+                randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, "tmpImage.jpg"), item.Left, item.Top, item.IsHyperLink).CloneStream();
+
+                if (randStream != null)
+                {
+                    bitmap.SetSource(randStream);
+                }
+
+                await PPUtils.SaveImage(bitmap, true);
+            }
+
+            await PPUtils.SaveImage(bitmap);
+        }      
     }
 }

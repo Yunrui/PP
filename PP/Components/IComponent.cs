@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PP
+﻿namespace PP
 {
+    using Windows.UI.Xaml.Media.Imaging;
+
     public enum ResizeAnchorMode
     {
         Full = 0,
@@ -24,5 +20,7 @@ namespace PP
         ResizeAnchorMode AnchorMode { get; }
 
         void Resize(double percentageWidth, double percentageHeight);
+
+        void Draw(WriteableBitmap bitmap, int left, int top);
     }
 }
