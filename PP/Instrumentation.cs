@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Windows.ApplicationModel;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
 using Windows.Storage;
@@ -108,6 +110,9 @@ namespace PP
         protected Instrumentation()
         {
         }
+
+        [DllImport("kernel32.dll")]
+        internal static extern void GetNativeSystemInfo(ref SystemInfo lpSystemInfo);
 
         public static Instrumentation Current
         {
@@ -227,6 +232,8 @@ namespace PP
                 CustomA = (this.watcher.ElapsedMilliseconds / 1000).ToString(),
                 // Region of this device
                 CustomB = (new Windows.Globalization.GeographicRegion()).CodeTwoLetter,
+                // Touch Enabled?
+                CustomC = (new Windows.Devices.Input.TouchCapabilities()).TouchPresent.ToString(),
             });
 
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<Record>));
