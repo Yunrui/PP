@@ -43,9 +43,10 @@
         <AppBar Padding="10,0,10,0" Name="appBar">
             <Grid>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <!--
                     <Button Content="Instrument" Click="Instrument_Click" />
+                    -->
                     <Button Content="Empty" Click="Empty_Click" />
-                    <Button Content="Share" Click="Share_Click" />
                     <Button Content="Feedback" Click="Feedback_Click" />
                     <Button Content="Save" Click="SaveButton_Click" />
                 </StackPanel>

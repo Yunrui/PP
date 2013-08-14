@@ -57,17 +57,7 @@
                 using (IRandomAccessStream fileStream = await savedItem.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
                 {
                     BitmapEncoder encoder = await BitmapEncoder.CreateAsync(encoderId, fileStream);
-                    /*Stream pixelStream = new MemoryStream(src.ToByteArray());
-                    byte[] pixels = new byte[pixelStream.Length];
-                    pixelStream.Read(pixels, 0, pixels.Length);
 
-                    for (int i = 0; i < pixels.Length; i += 4)
-                    {
-                        byte temp = pixels[i];
-                        pixels[i] = pixels[i + 2];
-                        pixels[i + 2] = temp;
-                    }
-                    */
                     encoder.SetPixelData(
                       BitmapPixelFormat.Rgba8,
                       BitmapAlphaMode.Straight,

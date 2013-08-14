@@ -57,34 +57,6 @@
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
-            dataTransferManager.DataRequested += new TypedEventHandler<DataTransferManager, DataRequestedEventArgs>(this.ShareTextHandler);
-        }
-
-        private async void ShareTextHandler(DataTransferManager sender, DataRequestedEventArgs e)
-        {
-            DataRequest request = e.Request;
-            request.Data.Properties.Title = "Share my prototype.";
-
-            DataRequestDeferral deferral = request.GetDeferral();
-            try
-            {
-                var stream = await this.GenerateCanvasStream();
-                IRandomAccessStream inMemoryStream = new InMemoryRandomAccessStream();
-                using (var inputStream = stream.AsInputStream())
-                {
-                    await RandomAccessStream.CopyAsync(inputStream, inMemoryStream);
-                }
-                inMemoryStream.Seek(0);
-
-                RandomAccessStreamReference imageStreamRef = RandomAccessStreamReference.CreateFromStream(inMemoryStream);
-                request.Data.Properties.Thumbnail = imageStreamRef;
-                request.Data.SetBitmap(imageStreamRef);
-            }
-            finally
-            {
-                deferral.Complete();
-            }
         }
 
         private void appBar_Opened(object sender, object e)
@@ -401,11 +373,6 @@
             component.Resize((width - 2 * thumbSize) / component.Width, height / component.Height);
         }
 
-        private void Share_Click(object sender, RoutedEventArgs e)
-        {
-            DataTransferManager.ShowShareUI();
-        }
-
         private async void Feedback_Click(object sender, RoutedEventArgs e)
         {
             var options = new Windows.System.LauncherOptions();
@@ -419,6 +386,8 @@
             {
                 await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=32005YunRuiSiMa.PP_1ryedwe3pk4t4"));
             }
+
+            await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "Feedback" });
         }
 
         /// <summary>
@@ -489,6 +458,7 @@
             }
 
             await PPUtils.SaveImage(bitmap);
+            await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "SavePicture" });
         }      
     }
 }
