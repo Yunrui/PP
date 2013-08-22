@@ -483,29 +483,31 @@
             {
                 WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
 
-                await PPUtils.SaveImage(bitmap, true);
+                bool isSuccessSave = await PPUtils.SaveImage(bitmap, true);
 
-                //// draw text
-                D2DWraper d2dManager = new D2DWraper();
-
-                d2dManager.Initialize(CoreApplication.MainView.CoreWindow);
-
-                IRandomAccessStream randStream = null;
-
-                foreach (TextItem item in TextCollection.Instance.Collection)
+                if (isSuccessSave)
                 {
-                    randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, "tmpImage.jpg"), item.Left, item.Top, item.IsHyperLink).CloneStream();
 
-                    if (randStream != null)
+                    //// draw text
+                    D2DWraper d2dManager = new D2DWraper();
+
+                    IRandomAccessStream randStream = null;
+
+                    foreach (TextItem item in TextCollection.Instance.Collection)
                     {
-                        bitmap.SetSource(randStream);
+                        randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, "tmpImage.jpg"), item.Left, item.Top, item.IsHyperLink).CloneStream();
+
+                        if (randStream != null)
+                        {
+                            bitmap.SetSource(randStream);
+                        }
+
+                        await PPUtils.SaveImage(bitmap, true);
                     }
 
-                    await PPUtils.SaveImage(bitmap, true);
+                    await PPUtils.SaveImage(bitmap);
+                    await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "SavePicture" });
                 }
-
-                await PPUtils.SaveImage(bitmap);
-                await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "SavePicture" });
             }
             catch (Exception ex)
             {

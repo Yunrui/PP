@@ -13,10 +13,10 @@
 
     public static class PPUtils
     {
-
-
-        public async static Task SaveImage(WriteableBitmap src, bool saveToLocal = false)
+        public async static Task<bool> SaveImage(WriteableBitmap src, bool saveToLocal = false)
         {
+            bool isSuccess = false;
+
             StorageFile savedItem = null;
 
             if (saveToLocal)
@@ -39,35 +39,40 @@
             try
             {
                 Guid encoderId;
-                switch (savedItem.FileType.ToLower())
+                if (savedItem != null)
                 {
-                    case ".jpg":
-                        encoderId = BitmapEncoder.JpegEncoderId;
-                        break;
-                    case ".bmp":
-                        encoderId = BitmapEncoder.BmpEncoderId;
-                        break;
-                    case ".png":
-                    default:
-                        encoderId = BitmapEncoder.PngEncoderId;
-                        break;
+                    switch (savedItem.FileType.ToLower())
+                    {
+                        case ".jpg":
+                            encoderId = BitmapEncoder.JpegEncoderId;
+                            break;
+                        case ".bmp":
+                            encoderId = BitmapEncoder.BmpEncoderId;
+                            break;
+                        case ".png":
+                        default:
+                            encoderId = BitmapEncoder.PngEncoderId;
+                            break;
 
-                }
+                    }
 
-                using (IRandomAccessStream fileStream = await savedItem.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
-                {
-                    BitmapEncoder encoder = await BitmapEncoder.CreateAsync(encoderId, fileStream);
+                    using (IRandomAccessStream fileStream = await savedItem.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
+                    {
+                        BitmapEncoder encoder = await BitmapEncoder.CreateAsync(encoderId, fileStream);
 
-                    encoder.SetPixelData(
-                      BitmapPixelFormat.Rgba8,
-                      BitmapAlphaMode.Straight,
-                      (uint)src.PixelWidth,
-                      (uint)src.PixelHeight,
-                      96, // Horizontal DPI 
-                      96, // Vertical DPI 
-                      src.ToByteArray()
-                      );
-                    await encoder.FlushAsync();
+                        encoder.SetPixelData(
+                          BitmapPixelFormat.Rgba8,
+                          BitmapAlphaMode.Straight,
+                          (uint)src.PixelWidth,
+                          (uint)src.PixelHeight,
+                          96, // Horizontal DPI 
+                          96, // Vertical DPI 
+                          src.ToByteArray()
+                          );
+                        await encoder.FlushAsync();
+                    }
+
+                    isSuccess = true;
                 }
             }
             catch (Exception ex)
@@ -79,6 +84,8 @@
             {
                 await Instrumentation.Current.Log(exception, exception.StackTrace);
             }
+
+            return isSuccess;
         }
     }
 }
