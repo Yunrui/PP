@@ -298,15 +298,41 @@
 
         private async void Top_Click(object sender, RoutedEventArgs e)
         {
-            var maxZIndex = this.panelcanvas.Children.Select(c => Canvas.GetZIndex(c)).Max();
-            Canvas.SetZIndex(this.selectedElement, maxZIndex + 1);
-            await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "Foreground" });
+            Exception exception = null;
+            try
+            {
+                var maxZIndex = this.panelcanvas.Children.Select(c => Canvas.GetZIndex(c)).Max();
+                Canvas.SetZIndex(this.selectedElement, maxZIndex + 1);
+                await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "Foreground" });
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+
+            if (exception != null)
+            {
+                await Instrumentation.Current.Log(exception, exception.StackTrace);
+            }
         }
 
         private async void Empty_Click(object sender, RoutedEventArgs e)
         {
-            this.panelcanvas.Children.Clear();
-            await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "Empty" });
+            Exception exception = null;
+            try
+            {
+                this.panelcanvas.Children.Clear();
+                await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "Empty" });
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+
+            if (exception != null)
+            {
+                await Instrumentation.Current.Log(exception, exception.StackTrace);
+            }
         }
 
         /// <summary>
@@ -375,19 +401,32 @@
 
         private async void Feedback_Click(object sender, RoutedEventArgs e)
         {
-            var options = new Windows.System.LauncherOptions();
-            options.PreferredApplicationPackageFamilyName = "mail";
-            options.PreferredApplicationDisplayName = "mail";
-
-            var mailto = new Uri("mailto:?to=mylpis@hotmail.com&subject=Feedback for Paper Prototype&body=Please enter your feedback below, really appreciate your help!");
-            var result = await Windows.System.Launcher.LaunchUriAsync(mailto, options);
-
-            if (!result)
+            Exception exception = null;
+            try
             {
-                await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=32005YunRuiSiMa.PP_1ryedwe3pk4t4"));
+                var options = new Windows.System.LauncherOptions();
+                options.PreferredApplicationPackageFamilyName = "mail";
+                options.PreferredApplicationDisplayName = "mail";
+
+                var mailto = new Uri("mailto:?to=mylpis@hotmail.com&subject=Feedback for Paper Prototype&body=Please enter your feedback below, really appreciate your help!");
+                var result = await Windows.System.Launcher.LaunchUriAsync(mailto, options);
+
+                if (!result)
+                {
+                    await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-windows-store:REVIEW?PFN=32005YunRuiSiMa.PP_1ryedwe3pk4t4"));
+                }
+
+                await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "Feedback" });
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
             }
 
-            await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "Feedback" });
+            if (exception != null)
+            {
+                await Instrumentation.Current.Log(exception, exception.StackTrace);
+            }
         }
 
         /// <summary>
@@ -434,31 +473,44 @@
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
-
-            await PPUtils.SaveImage(bitmap, true);
-
-            //// draw text
-            D2DWraper d2dManager = new D2DWraper();
-
-            d2dManager.Initialize(CoreApplication.MainView.CoreWindow);
-
-            IRandomAccessStream randStream = null;
-            
-            foreach (TextItem item in TextCollection.Instance.Collection)
+            Exception exception = null;
+            try
             {
-                randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, "tmpImage.jpg"), item.Left, item.Top, item.IsHyperLink).CloneStream();
-
-                if (randStream != null)
-                {
-                    bitmap.SetSource(randStream);
-                }
+                WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
 
                 await PPUtils.SaveImage(bitmap, true);
+
+                //// draw text
+                D2DWraper d2dManager = new D2DWraper();
+
+                d2dManager.Initialize(CoreApplication.MainView.CoreWindow);
+
+                IRandomAccessStream randStream = null;
+
+                foreach (TextItem item in TextCollection.Instance.Collection)
+                {
+                    randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, "tmpImage.jpg"), item.Left, item.Top, item.IsHyperLink).CloneStream();
+
+                    if (randStream != null)
+                    {
+                        bitmap.SetSource(randStream);
+                    }
+
+                    await PPUtils.SaveImage(bitmap, true);
+                }
+
+                await PPUtils.SaveImage(bitmap);
+                await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "SavePicture" });
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
             }
 
-            await PPUtils.SaveImage(bitmap);
-            await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "SavePicture" });
-        }      
+            if (exception != null)
+            {
+                await Instrumentation.Current.Log(exception, exception.StackTrace);
+            }
+        }
     }
 }
