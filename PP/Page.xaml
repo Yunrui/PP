@@ -15,20 +15,21 @@
             <ColumnDefinition Width="1"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-
-        <ListView x:Name="toolbox" Grid.Column="0" DragItemsStarting="toolbox_DragItemsStarting" CanDragItems="True" Padding="8,20,0,0">
-            <Image Source="Assets/Label.png" Width="120" Height="128"></Image>
-            <Image Source="Assets/Textbox.png" Width="120" Height="128"></Image>
-            <Image Source="Assets/HyperLink.png" Width="120" Height="128"></Image>
-            <Image Source="Assets/Button.png" Width="120" Height="128"></Image>
-            <Image Source="Assets/Icon.png" Width="120" Height="128"></Image>
-            <Image Source="Assets/RadioButton.png" Width="120" Height="128"></Image>
-            <Image Source="Assets/CheckBox.png" Width="120" Height="128"></Image>
-            <Image Source="Assets/ComboBox.png" Width="120" Height="128"></Image>
-            <Image Source="Assets/HorizontalLine.png" Width="120" Height="128"></Image>
-            <Image Source="Assets/VerticalLine.png" Width="120" Height="128"></Image>
-        </ListView>
-
+        <StackPanel Grid.Column="0">
+            <Button Width="140" Margin="4,26,4,0" Click="MenuButton_Click">Menu</Button>
+            <ListView x:Name="toolbox"  DragItemsStarting="toolbox_DragItemsStarting" CanDragItems="True" Padding="8,0,0,0">
+                <Image Source="Assets/Label.png" Width="120" Height="128"></Image>
+                <Image Source="Assets/Textbox.png" Width="120" Height="128"></Image>
+                <Image Source="Assets/HyperLink.png" Width="120" Height="128"></Image>
+                <Image Source="Assets/Button.png" Width="120" Height="128"></Image>
+                <Image Source="Assets/Icon.png" Width="120" Height="128"></Image>
+                <Image Source="Assets/RadioButton.png" Width="120" Height="128"></Image>
+                <Image Source="Assets/CheckBox.png" Width="120" Height="128"></Image>
+                <Image Source="Assets/ComboBox.png" Width="120" Height="128"></Image>
+                <Image Source="Assets/HorizontalLine.png" Width="120" Height="128"></Image>
+                <Image Source="Assets/VerticalLine.png" Width="120" Height="128"></Image>
+            </ListView>
+        </StackPanel>
         
             <Canvas  Name="panelcanvas" Grid.Column="2" AllowDrop="True" Drop="panelcanvas_Drop" HorizontalAlignment="Stretch" Margin="0,28,12,12" VerticalAlignment="Stretch" >
                 <Canvas.Background>

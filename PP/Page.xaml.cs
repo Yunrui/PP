@@ -429,6 +429,11 @@
             }
         }
 
+        private void MenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.appBar.IsOpen = true;
+        }
+
         /// <summary>
         /// Getnerate the writeable bitmap, and register the text.
         /// </summary>
