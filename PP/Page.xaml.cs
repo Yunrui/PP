@@ -23,6 +23,7 @@
     using Windows.UI.Xaml.Media.Imaging;
     using Windows.UI.Xaml.Navigation;
     using WindowsRuntimeComponent1;
+    using Windows.Storage.Pickers;
 
     /// <summary>
     /// Page for design a prototype
@@ -36,12 +37,16 @@
         private const int thumbSize = 15;
         private const string BackgroundImageUri = "ms-appx:///Assets/WebPage.png";
 
+        private D2DWraper d2dManager = new D2DWraper();
+
         public DrawingPage()
         {
             this.InitializeComponent();
 
             this.panelcanvas.Tapped += canvas_Tapped;
             this.appBar.Opened += appBar_Opened;
+
+            d2dManager.Initialize(CoreApplication.MainView.CoreWindow);
         }
 
         public async Task<Stream> GenerateCanvasStream()
@@ -476,38 +481,61 @@
             return bitmap;
         }
 
-        private async void SaveButton_Click(object sender, RoutedEventArgs e)
+        private async Task<StorageFile> GetStorageFile(bool saveToLocal = false)
         {
+            StorageFile savedItem = null;
+
+            if (saveToLocal)
+            {
+                savedItem = await ApplicationData.Current.LocalFolder.CreateFileAsync("tmpImage.jpg", CreationCollisionOption.ReplaceExisting);
+            }
+            else
+            {
+                FileSavePicker save = new FileSavePicker();
+                save.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+                save.DefaultFileExtension = ".jpg";
+                save.SuggestedFileName = "newimage";
+                save.FileTypeChoices.Add(".bmp", new List<string>() { ".bmp" });
+                save.FileTypeChoices.Add(".png", new List<string>() { ".png" });
+                save.FileTypeChoices.Add(".jpg", new List<string>() { ".jpg", ".jpeg" });
+                savedItem = await save.PickSaveFileAsync();
+            }
+
+            return savedItem;
+        }
+
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
+        {            
             Exception exception = null;
             try
             {
-                WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
+                StorageFile saveItem = await this.GetStorageFile();
 
-                bool isSuccessSave = await PPUtils.SaveImage(bitmap, true);
-
-                if (isSuccessSave)
+                if (saveItem != null)
                 {
+                    StorageFile localStorageFile = await this.GetStorageFile(true);
 
-                    //// draw text
-                    D2DWraper d2dManager = new D2DWraper();
+                    WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
 
-                    IRandomAccessStream randStream = null;
+                    await PPUtils.SaveImage(bitmap, localStorageFile);
 
                     foreach (TextItem item in TextCollection.Instance.Collection)
                     {
-                        randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, "tmpImage.jpg"), item.Left, item.Top, item.IsHyperLink).CloneStream();
-
-                        if (randStream != null)
+                        using (IRandomAccessStream randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, "tmpImage.jpg"), item.Left, item.Top, item.IsHyperLink).CloneStream())
                         {
-                            bitmap.SetSource(randStream);
+                            if (randStream != null)
+                            {
+                                bitmap.SetSource(randStream);
+                            }
                         }
 
-                        await PPUtils.SaveImage(bitmap, true);
+                        await PPUtils.SaveImage(bitmap, localStorageFile);
                     }
 
-                    await PPUtils.SaveImage(bitmap);
+                    await PPUtils.SaveImage(bitmap, saveItem);
+
                     await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "SavePicture" });
-                }
+                }               
             }
             catch (Exception ex)
             {
@@ -516,6 +544,9 @@
 
             if (exception != null)
             {
+                MessageDialog message = new MessageDialog("Failed to save. Please retry later.");
+
+                await message.ShowAsync();
                 await Instrumentation.Current.Log(exception, exception.StackTrace);
             }
         }
