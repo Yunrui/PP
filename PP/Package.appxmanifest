@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
-  <Identity Name="32005YunRuiSiMa.PP" Publisher="CN=5A8FDBBA-2BFD-44CC-8D84-FC011EC5F7D2" Version="0.1.3.2" />
+  <Identity Name="32005YunRuiSiMa.PP" Publisher="CN=5A8FDBBA-2BFD-44CC-8D84-FC011EC5F7D2" Version="0.1.3.4" />
   <Properties>
     <DisplayName>Paper Prototype</DisplayName>
     <PublisherDisplayName>YunRui SiMa</PublisherDisplayName>
