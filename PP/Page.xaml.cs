@@ -62,6 +62,16 @@
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            var templateName = e.Parameter as string;
+
+            // If another template is selected, we do remove all content in current page and reload template
+            if (!string.IsNullOrWhiteSpace(templateName))
+            {
+                // Seems that just clear Children of Canvas not enough
+                TextCollection.Instance.Collection.Clear();
+
+                this.panelcanvas.Children.Clear();
+            }
         }
 
         private void appBar_Opened(object sender, object e)
@@ -327,6 +337,10 @@
             try
             {
                 this.panelcanvas.Children.Clear();
+
+                // Seems that just clear Children of Canvas not enough
+                TextCollection.Instance.Collection.Clear();
+
                 await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "Empty" });
             }
             catch (Exception ex)
@@ -481,13 +495,13 @@
             return bitmap;
         }
 
-        private async Task<StorageFile> GetStorageFile(bool saveToLocal = false)
+        private async Task<StorageFile> GetStorageFile(bool saveToLocal = false, string fileName = "tmpImage.jpg")
         {
             StorageFile savedItem = null;
 
             if (saveToLocal)
             {
-                savedItem = await ApplicationData.Current.LocalFolder.CreateFileAsync("tmpImage.jpg", CreationCollisionOption.ReplaceExisting);
+                savedItem = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
             }
             else
             {
@@ -505,7 +519,7 @@
         }
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
-        {            
+        {
             Exception exception = null;
             try
             {
@@ -551,9 +565,49 @@
             }
         }
 
-        private void Back_Click(object sender, RoutedEventArgs e)
+        private async void Back_Click(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(MainPage));
+            Exception exception = null;
+
+            try
+            {
+                Guid guid = Guid.NewGuid();
+                string filename = guid + ".jpg";
+                StorageFile localStorageFile = await this.GetStorageFile(true, filename);
+
+                WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
+
+                await PPUtils.SaveImage(bitmap, localStorageFile);
+
+                foreach (TextItem item in TextCollection.Instance.Collection)
+                {
+                    using (IRandomAccessStream randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, filename), item.Left, item.Top, item.IsHyperLink).CloneStream())
+                    {
+                        if (randStream != null)
+                        {
+                            bitmap.SetSource(randStream);
+                        }
+                    }
+
+                    await PPUtils.SaveImage(bitmap, localStorageFile);
+                }
+
+                this.Frame.Navigate(typeof(MainPage), "ms-appdata:///local/" + filename);
+
+                await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "Back" });
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+            }
+
+            if (exception != null)
+            {
+                MessageDialog message = new MessageDialog("Failed to back to landing page. Please retry later.");
+
+                await message.ShowAsync();
+                await Instrumentation.Current.Log(exception, exception.StackTrace);
+            }
         }
     }
 }
