@@ -41,8 +41,8 @@
 
         public DrawingPage()
         {
-            this.InitializeComponent();
-
+            this.InitializeComponent(); 
+            this.NavigationCacheMode = Windows.UI.Xaml.Navigation.NavigationCacheMode.Enabled;
             this.panelcanvas.Tapped += canvas_Tapped;
             this.appBar.Opened += appBar_Opened;
 
@@ -549,6 +549,11 @@
                 await message.ShowAsync();
                 await Instrumentation.Current.Log(exception, exception.StackTrace);
             }
+        }
+
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(MainPage));
         }
     }
 }

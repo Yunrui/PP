@@ -9,11 +9,19 @@
     xmlns:p="using:PerpetuumSoft.Controls"
     mc:Ignorable="d">
 
-    <Grid Background="White">
-        <controls:CoverFlow x:Name="CoverFlowControl" Height="400">
+    <Grid Background="LightGray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock Text="Choose a template and double-tap to start prototyping" FontSize="48" Padding="8" Foreground="AntiqueWhite"></TextBlock>
+        <controls:CoverFlow Grid.Row="1" x:Name="CoverFlowControl" Height="600" DoubleTapped="CoverFlowControl_DoubleTapped">
             <controls:CoverFlow.ItemTemplate>
                 <DataTemplate>
-                    <Image Source="{Binding}" Height="400" />
+                    <StackPanel>
+                        <TextBlock Text="{Binding Description}" FontSize="24" Foreground="Beige"></TextBlock>
+                        <Image Source="{Binding Image}" Height="400" />
+                    </StackPanel>
                 </DataTemplate>
             </controls:CoverFlow.ItemTemplate>
         </controls:CoverFlow>

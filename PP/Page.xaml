@@ -45,8 +45,11 @@
             <Grid>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     
+                    <!--
                     <Button Content="Instrument" Click="Instrument_Click" />
+                    -->
                     
+                    <Button Content="Back" Click="Back_Click" />
                     <Button Content="Empty" Click="Empty_Click" />
                     <Button Content="Feedback" Click="Feedback_Click" />
                     <Button Content="Save" Click="SaveButton_Click" />

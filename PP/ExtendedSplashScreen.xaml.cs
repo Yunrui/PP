@@ -85,7 +85,8 @@ namespace PP
                 }
             }
 
-            this.Frame.Navigate(typeof(DrawingPage));
+            this.Frame.Navigate(typeof(MainPage));
+            // this.Frame.Navigate(typeof(DrawingPage));
         }
 
         /// <summary>

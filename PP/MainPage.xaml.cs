@@ -26,7 +26,7 @@ namespace PP
     {
         private string[] _ids =
         {
-            "1067", "2328", 
+            "1067", "2328", "4357", "4357", "4357", "4357", "4357", "4357", "4357", "4357",
         };
 
         public MainPage()
@@ -44,12 +44,37 @@ namespace PP
             var profile = NetworkInformation.GetInternetConnectionProfile();
 
 
-            var comics = new ObservableCollection<string>();
+            var comics = new ObservableCollection<CoverFlowDataSource>();
 
             foreach (string id in _ids)
-                comics.Add("http://199.19.135.170/services/mycomix.svc/cover240/" + id);
+            {
+                CoverFlowDataSource ds = new CoverFlowDataSource();
+                ds.Description = "Starting with a blank web page";
+                ds.Image = "Assets/WebPage.png";
+                comics.Add(ds);
+            }
 
             CoverFlowControl.ItemsSource = comics;
+        }
+
+        private void CoverFlowControl_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(DrawingPage));
+        }
+    }
+
+    public class CoverFlowDataSource
+    {
+        public string Description
+        {
+            get;
+            set;
+        }
+
+        public string Image
+        {
+            get;
+            set;
         }
     }
 }
