@@ -144,6 +144,7 @@
     <Compile Include="Components\RadioButton.xaml.cs">
       <DependentUpon>RadioButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Components\SerializerComponent.cs" />
     <Compile Include="Components\TextBox.xaml.cs">
       <DependentUpon>TextBox.xaml</DependentUpon>
     </Compile>

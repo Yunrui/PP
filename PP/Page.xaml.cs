@@ -6,8 +6,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Windows.ApplicationModel.DataTransfer;
-    using Windows.Devices.Input;
     using System.Threading.Tasks;
     using Windows.ApplicationModel.Core;
     using Windows.Foundation;
@@ -24,6 +22,8 @@
     using Windows.UI.Xaml.Navigation;
     using WindowsRuntimeComponent1;
     using Windows.Storage.Pickers;
+    using System.Runtime.Serialization.Json;
+    using System.Text;
 
     /// <summary>
     /// Page for design a prototype
@@ -31,11 +31,12 @@
     public sealed partial class DrawingPage : Page
     {
         public static WriteableBitmap IconBitmap;
+
         private const string IconImageUri = "ms-appx:///Assets/IconForSave.png";
+        private const string BackgroundImageUri = "ms-appx:///Assets/WebPage.png";
+        private const int thumbSize = 15;
 
         private Grid selectedElement = null;
-        private const int thumbSize = 15;
-        private const string BackgroundImageUri = "ms-appx:///Assets/WebPage.png";
 
         private D2DWraper d2dManager = new D2DWraper();
 
@@ -90,43 +91,7 @@
                 Uri uri = (Uri)e.Data.Properties["SelectedComponent"];
                 Component component = ComponentRetriever.Retrieve(uri.LocalPath.ToString());
 
-                Point point = e.GetPosition(this.panelcanvas);
-
-                Grid grid = new Grid();
-                Canvas.SetTop(grid, point.Y);
-                Canvas.SetLeft(grid, point.X);
-                grid.Width = component.InitialWidth + 2 * thumbSize;
-                grid.Height = component.InitialHeight;
-
-                Thumb thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = thumbSize, Width = thumbSize, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, };
-                thumb.DragDelta += ThumbBottomRight_DragDelta;
-                grid.Children.Add(thumb);
-
-                thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = thumbSize, Width = thumbSize, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom };
-                thumb.DragDelta += ThumbBottomLeft_DragDelta;
-                grid.Children.Add(thumb);
-
-                thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = thumbSize, Width = thumbSize, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top };
-                thumb.DragDelta += ThumbTopRight_DragDelta;
-                grid.Children.Add(thumb);
-
-                thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = thumbSize, Width = thumbSize, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
-                thumb.DragDelta += ThumbTopLeft_DragDelta;
-                grid.Children.Add(thumb);
-
-                grid.Children.Add(component);
-
-                grid.RenderTransform = new TranslateTransform();
-
-                // Set Manipulation to Component instead of Grid
-                // Otherwise, Resizing will also move components
-                component.ManipulationMode = ManipulationModes.All;
-                component.ManipulationDelta += grid_ManipulationDelta;
-                
-
-                panelcanvas.Children.Add(grid);
-
-                grid.Tapped += new TappedEventHandler(component_Tapped);
+                this.AddComponentToUI(component, e.GetPosition(this.panelcanvas));
 
                 await Instrumentation.Current.Log(component.GetType().Name);
             }
@@ -139,6 +104,45 @@
             {
                 await Instrumentation.Current.Log(exception, exception.StackTrace);
             }
+        }
+
+        private void AddComponentToUI(Component component, Point point)
+        {
+            Grid grid = new Grid();
+            Canvas.SetTop(grid, point.Y);
+            Canvas.SetLeft(grid, point.X);
+            grid.Width = component.Width + 2 * thumbSize;
+            grid.Height = component.Height;
+
+            Thumb thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = thumbSize, Width = thumbSize, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom, };
+            thumb.DragDelta += ThumbBottomRight_DragDelta;
+            grid.Children.Add(thumb);
+
+            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = thumbSize, Width = thumbSize, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom };
+            thumb.DragDelta += ThumbBottomLeft_DragDelta;
+            grid.Children.Add(thumb);
+
+            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = thumbSize, Width = thumbSize, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top };
+            thumb.DragDelta += ThumbTopRight_DragDelta;
+            grid.Children.Add(thumb);
+
+            thumb = new Thumb() { Background = new SolidColorBrush(Colors.Red), Visibility = Windows.UI.Xaml.Visibility.Collapsed, Height = thumbSize, Width = thumbSize, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+            thumb.DragDelta += ThumbTopLeft_DragDelta;
+            grid.Children.Add(thumb);
+
+            grid.Children.Add(component);
+
+            grid.RenderTransform = new TranslateTransform();
+
+            // Set Manipulation to Component instead of Grid
+            // Otherwise, Resizing will also move components
+            component.ManipulationMode = ManipulationModes.All;
+            component.ManipulationDelta += grid_ManipulationDelta;
+
+
+            panelcanvas.Children.Add(grid);
+
+            grid.Tapped += new TappedEventHandler(component_Tapped);
         }
 
         void grid_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
@@ -471,24 +475,15 @@
                 Grid grid = element as Grid;
                 Component component = grid.Children.Where(c => c is Component).First() as Component;
 
-                int left = (int)Canvas.GetLeft(grid);
-                int top = (int)Canvas.GetTop(grid);
-
-                TranslateTransform translateTransform = grid.RenderTransform as TranslateTransform;
-
-                if (translateTransform != null)
-                {
-                    left += (int) translateTransform.X;
-                    top += (int) translateTransform.Y;
-                }
+                Point leftTopPoint = PPUtils.GetActualLeftTop(grid);
 
                 if (component is Icon)
                 {
-                    (component as Icon).Draw(bitmap, left, top, IconBitmap);
+                    (component as Icon).Draw(bitmap, (int) leftTopPoint.X, (int) leftTopPoint.Y, IconBitmap);
                 }
                 else
                 {
-                    component.Draw(bitmap, left, top);
+                    component.Draw(bitmap, (int) leftTopPoint.X, (int) leftTopPoint.Y);
                 }
             }
 
@@ -607,6 +602,62 @@
 
                 await message.ShowAsync();
                 await Instrumentation.Current.Log(exception, exception.StackTrace);
+            }
+        }
+
+        private async void LoadTemplateButton_Click(object sender, RoutedEventArgs e)
+        {
+            var json = await PPUtils.ReadFile( "Template");
+            MemoryStream stream = new MemoryStream((UTF8Encoding.UTF8.GetBytes(json)));
+
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<SerializerComponent>));
+
+            IList<SerializerComponent> components = serializer.ReadObject(stream) as IList<SerializerComponent>;
+
+            this.panelcanvas.Children.Clear();
+
+            foreach (SerializerComponent serializerComponent in components)
+            {
+                Component compoent = Component.CreateComponent(serializerComponent);
+
+                this.AddComponentToUI(compoent, new Point(compoent.Left, compoent.Top));
+            }
+        }
+
+        private async void SaveTemplateButton_Click(object sender, RoutedEventArgs e)
+        {
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<SerializerComponent>));
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                IList<SerializerComponent> components = new List<SerializerComponent>();
+
+                foreach (UIElement element in this.panelcanvas.Children)
+                {
+                    Grid grid = element as Grid;
+
+                    Component component = grid.Children.Where(c => c is Component).First() as Component;
+
+                    SerializerComponent serializerComponent = new SerializerComponent(component);
+
+                    Point leftTopPoint = PPUtils.GetActualLeftTop(grid);
+
+                    serializerComponent.Left = leftTopPoint.X;
+                    serializerComponent.Top = leftTopPoint.Y;
+
+                    components.Add(serializerComponent);
+                }
+
+                serializer.WriteObject(stream, components);
+                await stream.FlushAsync();
+
+                stream.Seek(0, SeekOrigin.Begin);
+                StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync("Template", CreationCollisionOption.ReplaceExisting);
+                using (Stream fileStream = await file.OpenStreamForWriteAsync())
+                {
+                    await stream.CopyToAsync(fileStream);
+                    await fileStream.FlushAsync();
+                }
             }
         }
     }

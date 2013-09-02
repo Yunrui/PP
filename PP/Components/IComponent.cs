@@ -15,8 +15,8 @@
         string ComponentName { get; }
         double ComponentMinWidth { get; }
         double ComponentMinHeight { get; }
-        double InitialWidth { get; }
-        double InitialHeight { get; }
+        double Width { get; }
+        double Height { get; }
         ResizeAnchorMode AnchorMode { get; }
 
         void Resize(double percentageWidth, double percentageHeight);
