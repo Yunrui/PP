@@ -20,8 +20,15 @@
         {
             this.InitializeComponent();
 
-            this.TextBlock.Text = Constants.DefaultRadioButtonContext;
-            this.ConfigureTextBox.Text = Constants.DefaultRadioButtonContext;
+            this.SetText( Constants.DefaultRadioButtonContext);
+        }
+
+        public override void SetText(string text)
+        {
+            base.SetText(text);
+
+            this.TextBlock.Text = this.Text;
+            this.ConfigureTextBox.Text = this.TextBlock.Text;
         }
 
         public override void Draw(WriteableBitmap bitmap, int left, int top)
@@ -68,6 +75,8 @@
              * I'll refactor it in the Week2
              */
             this.TextBlock.Text = this.ConfigureTextBox.Text.Replace(Environment.NewLine, " ");
+            this.Text = this.TextBlock.Text;
+            this.ConfigureTextBox.SelectAll();
         }
 
         /// <summary>

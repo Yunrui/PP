@@ -16,8 +16,15 @@
         {
             this.InitializeComponent();
 
-            this.updateUnderLine(Constants.DefaultHyperLinkContext);
-            this.ConfigureTextBox.Text = Constants.DefaultHyperLinkContext;
+            this.SetText(Constants.DefaultHyperLinkContext);
+        }
+
+        public override void SetText(string text)
+        {
+            base.SetText(text);
+
+            this.updateUnderLine(this.Text);
+            this.ConfigureTextBox.Text = this.Text;
         }
 
         public override void Draw(WriteableBitmap bitmap, int left, int top)
@@ -58,7 +65,9 @@
              * This code is duped with the code in the TextBox.xaml.cs
              * I'll refactor it in the Week2
              */
-            this.updateUnderLine(this.ConfigureTextBox.Text.Replace(Environment.NewLine, " "));
+            this.TextBlock.Text = this.ConfigureTextBox.Text.Replace(Environment.NewLine, " ");
+            this.Text = this.TextBlock.Text;
+            this.ConfigureTextBox.SelectAll();
         }
 
         /// <summary>

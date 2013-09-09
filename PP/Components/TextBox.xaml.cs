@@ -1,32 +1,28 @@
-﻿using PP.Common;
-using PP.Draw;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
-
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
-
-namespace PP.Components
+﻿namespace PP.Components
 {
+    using PP.Common;
+    using PP.Components.Interface;
+    using PP.Draw;
+    using System;
+    using Windows.UI;
+    using Windows.UI.Xaml;
+    using Windows.UI.Xaml.Input;
+    using Windows.UI.Xaml.Media.Imaging;
+
     public sealed partial class TextBox : Component
     {
         public TextBox()
         {
             this.InitializeComponent();
 
-            this.TextBlock.Text = Constants.DefaultTextBoxContext;
+            this.SetText(Constants.DefaultTextBoxContext);
+        }
+
+        public override void SetText(string text)
+        {
+            base.SetText(text);
+
+            this.TextBlock.Text = this.Text;
             this.ConfigureTextBox.Text = this.TextBlock.Text;
         }
 
@@ -76,6 +72,7 @@ namespace PP.Components
              * But the textblock will not by design
              */
             this.TextBlock.Text = this.ConfigureTextBox.Text.Replace(Environment.NewLine, " ");
+            this.Text = this.TextBlock.Text;
             this.ConfigureTextBox.SelectAll();
         }
     }

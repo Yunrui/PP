@@ -1,4 +1,4 @@
-﻿namespace PP
+﻿namespace PP.Components.Interface
 {
     using Windows.UI.Xaml.Media.Imaging;
 

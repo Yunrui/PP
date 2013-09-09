@@ -40,8 +40,8 @@
                 Width="400"
                 Background="Beige"
                 TextWrapping="Wrap"
-                AcceptsReturn="True">
-            </TextBox>
+                AcceptsReturn="True"
+                />
         </Popup>
     </Grid>
 </pp:Component>

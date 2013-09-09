@@ -28,6 +28,7 @@
                         TextAlignment="Center"
                         VerticalAlignment="Center"
                         Margin="1,1,1,0" 
+                        Text="{Binding Text}"
                     />
                 </Grid>
             </Border>
@@ -45,8 +46,8 @@
                 Background="Beige"
                 TextWrapping="Wrap"
                 AcceptsReturn="True"
-            >
-            </TextBox>
+                Text="{Binding Text}"
+            />
         </Popup>
     </Grid>
 </pp:Component>

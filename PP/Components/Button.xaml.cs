@@ -14,8 +14,15 @@
         {
             this.InitializeComponent();
 
-            this.TextBlock.Text = Constants.DefaultButtonContext;
-            this.ConfigureTextBox.Text = Constants.DefaultButtonContext;
+            this.SetText(Constants.DefaultButtonContext);
+        }
+
+        public override void SetText(string text)
+        {
+            base.SetText(text);
+
+            this.TextBlock.Text = this.Text;
+            this.ConfigureTextBox.Text = this.TextBlock.Text;
         }
 
         public override void Draw(WriteableBitmap bitmap, int left, int top)
@@ -77,6 +84,8 @@
              * But the textblock will not by design
              */
             this.TextBlock.Text = this.ConfigureTextBox.Text.Replace(Environment.NewLine, " ");
+            this.Text = this.TextBlock.Text;
+            this.ConfigureTextBox.SelectAll();
         }
     }
 }

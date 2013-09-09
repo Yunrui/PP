@@ -9,6 +9,8 @@
         {
             this.ComponentName = component.ComponentName;
 
+            this.Text = !string.IsNullOrEmpty(component.Text) ? component.Text : string.Empty;
+
             this.Width = component.Width;
             this.Height = component.Height;
 
@@ -48,6 +50,9 @@
 
         [DataMember]
         public double Top { get; set; }
+
+        [DataMember]
+        public string Text { get; set; }
 
         private string componentName;
     }

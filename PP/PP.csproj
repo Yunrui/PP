@@ -155,7 +155,7 @@
     <Compile Include="ExtendedSplashScreen.xaml.cs">
       <DependentUpon>ExtendedSplashScreen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Components\IComponent.cs" />
+    <Compile Include="Components\Interface\IComponent.cs" />
     <Compile Include="Instrumentation.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

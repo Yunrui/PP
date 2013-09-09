@@ -24,6 +24,7 @@
     using Windows.Storage.Pickers;
     using System.Runtime.Serialization.Json;
     using System.Text;
+    using PP.Components.Interface;
 
     /// <summary>
     /// Page for design a prototype

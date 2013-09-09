@@ -3,20 +3,10 @@
     using PP.Common;
     using PP.Draw;
     using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using Windows.Foundation;
-    using Windows.Foundation.Collections;
     using Windows.UI;
     using Windows.UI.Xaml;
-    using Windows.UI.Xaml.Controls;
-    using Windows.UI.Xaml.Controls.Primitives;
-    using Windows.UI.Xaml.Data;
     using Windows.UI.Xaml.Input;
-    using Windows.UI.Xaml.Media;
     using Windows.UI.Xaml.Media.Imaging;
-    using Windows.UI.Xaml.Navigation;
 
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -29,8 +19,15 @@
         {
             this.InitializeComponent();
 
-            this.TextBlock.Text = Constants.DeafultComboBoxContext;
-            this.ConfigureTextBox.Text = Constants.DeafultComboBoxContext;
+            this.SetText(Constants.DeafultComboBoxContext);
+        }
+
+        public override void SetText(string text)
+        {
+            base.SetText(text);
+
+            this.TextBlock.Text = this.Text;
+            this.ConfigureTextBox.Text = this.TextBlock.Text;
         }
 
         public override void Resize(double percentageWidth, double percentageHeight)
@@ -96,6 +93,8 @@
              * I'll refactor it in the Week2
              */
             this.TextBlock.Text = this.ConfigureTextBox.Text.Replace(Environment.NewLine, " ");
+            this.Text = this.TextBlock.Text;
+            this.ConfigureTextBox.SelectAll();
         }
 
         /// <summary>

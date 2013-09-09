@@ -1,16 +1,17 @@
 ﻿namespace PP
 {
     using PP.Components;
+    using PP.Components.Interface;
     using System.Runtime.Serialization;
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Media.Imaging;
 
-    [DataContract]
     public abstract class Component : UserControl, IComponent
     {
         protected const int DeltaPixel = 2;
+
+        public string Text { get; set; }
         
-        [DataMember]
         public string ComponentName
         {
             get { return this.GetType().FullName; }
@@ -20,7 +21,6 @@
 
         public double ComponentMinHeight { get { return this.MinHeight; } }
 
-        [DataMember]
         public new double Width
         {
             get
@@ -34,7 +34,6 @@
             }
         }
 
-        [DataMember]
         public new double Height 
         { 
             get 
@@ -48,10 +47,8 @@
             }
         }
 
-        [DataMember]
         public double Left { get; set; }
         
-        [DataMember]
         public double Top { get; set; }
 
         public ResizeAnchorMode AnchorMode 
@@ -125,6 +122,8 @@
                 component.Height = serivalizerComponent.Height;
                 component.Left = serivalizerComponent.Left;
                 component.Top = serivalizerComponent.Top;
+
+                component.SetText(serivalizerComponent.Text);
             }
             else
             {
@@ -132,6 +131,11 @@
             }
 
             return component;
+        }
+
+        public virtual void SetText(string text)
+        {
+            this.Text = text;
         }
     }
 }
