@@ -34,12 +34,15 @@
                 <Image Source="Assets/VerticalLine.png" Width="120" Height="128"></Image>
             </ListView>
         </Grid>
-        
-            <Canvas  Name="panelcanvas" Grid.Column="2" AllowDrop="True" Drop="panelcanvas_Drop" HorizontalAlignment="Stretch" Margin="0,28,12,12" VerticalAlignment="Stretch" >
-                <Canvas.Background>
-                    <ImageBrush ImageSource="Assets/WebPage.png" />
-                </Canvas.Background>
-            </Canvas>
+
+        <Popup VerticalAlignment="Center" Name="TemplateNamePopupcontrol">
+        </Popup>
+
+        <Canvas  Name="panelcanvas" Grid.Column="2" AllowDrop="True" Drop="panelcanvas_Drop" HorizontalAlignment="Stretch" Margin="0,28,12,12" VerticalAlignment="Stretch" >
+            <Canvas.Background>
+                <ImageBrush ImageSource="Assets/WebPage.png" />
+            </Canvas.Background>
+        </Canvas>
     </Grid>
     
     <Page.BottomAppBar>
@@ -55,9 +58,9 @@
                     <Button Content="Empty" Click="Empty_Click" />
                     <Button Content="Feedback" Click="Feedback_Click" />
                     <Button Content="Save" Click="SaveButton_Click" />
+
+                    <Button Content="GenerateTemplate" Click="GenerateTemplateButton_Click"/>
                     
-                    <Button Content="LoadTemplate" Click="LoadTemplateButton_Click" />
-                    <Button Content="SaveTemplate" Click="SaveTemplateButton_Click" />
                 </StackPanel>
 
                 <StackPanel Name="contextPanel" Orientation="Horizontal" HorizontalAlignment="Right">

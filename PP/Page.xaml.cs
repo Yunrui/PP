@@ -31,10 +31,6 @@
     /// </summary>
     public sealed partial class DrawingPage : Page
     {
-        public static WriteableBitmap IconBitmap;
-
-        private const string IconImageUri = "ms-appx:///Assets/IconForSave.png";
-        private const string BackgroundImageUri = "ms-appx:///Assets/WebPage.png";
         private const int thumbSize = 15;
 
         private Grid selectedElement = null;
@@ -49,12 +45,6 @@
             this.appBar.Opened += appBar_Opened;
 
             d2dManager.Initialize(CoreApplication.MainView.CoreWindow);
-        }
-
-        public async Task<Stream> GenerateCanvasStream()
-        {
-            WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
-            return new MemoryStream(bitmap.ToByteArray());
         }
 
         /// <summary>
@@ -458,94 +448,14 @@
             this.appBar.IsOpen = true;
         }
 
-        /// <summary>
-        /// Getnerate the writeable bitmap, and register the text.
-        /// </summary>
-        /// <returns></returns>
-        private async Task<WriteableBitmap> GenearteWriteableBitmap()
-        {
-            Uri iconImageUri = new Uri(IconImageUri);
-            IconBitmap = await new WriteableBitmap(1, 1).FromContent(iconImageUri);
-
-            Uri backgroundImageUri = new Uri(BackgroundImageUri);
-
-            WriteableBitmap bitmap = await new WriteableBitmap(1, 1).FromContent(backgroundImageUri);
-
-            foreach (UIElement element in this.panelcanvas.Children)
-            {
-                Grid grid = element as Grid;
-                Component component = grid.Children.Where(c => c is Component).First() as Component;
-
-                Point leftTopPoint = PPUtils.GetActualLeftTop(grid);
-
-                if (component is Icon)
-                {
-                    (component as Icon).Draw(bitmap, (int) leftTopPoint.X, (int) leftTopPoint.Y, IconBitmap);
-                }
-                else
-                {
-                    component.Draw(bitmap, (int) leftTopPoint.X, (int) leftTopPoint.Y);
-                }
-            }
-
-            return bitmap;
-        }
-
-        private async Task<StorageFile> GetStorageFile(bool saveToLocal = false, string fileName = "tmpImage.jpg")
-        {
-            StorageFile savedItem = null;
-
-            if (saveToLocal)
-            {
-                savedItem = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-            }
-            else
-            {
-                FileSavePicker save = new FileSavePicker();
-                save.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-                save.DefaultFileExtension = ".jpg";
-                save.SuggestedFileName = "newimage";
-                save.FileTypeChoices.Add(".bmp", new List<string>() { ".bmp" });
-                save.FileTypeChoices.Add(".png", new List<string>() { ".png" });
-                save.FileTypeChoices.Add(".jpg", new List<string>() { ".jpg", ".jpeg" });
-                savedItem = await save.PickSaveFileAsync();
-            }
-
-            return savedItem;
-        }
-
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             Exception exception = null;
             try
             {
-                StorageFile saveItem = await this.GetStorageFile();
+                PPUtils.SavePicture(this.d2dManager, this.panelcanvas);
 
-                if (saveItem != null)
-                {
-                    StorageFile localStorageFile = await this.GetStorageFile(true);
-
-                    WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
-
-                    await PPUtils.SaveImage(bitmap, localStorageFile);
-
-                    foreach (TextItem item in TextCollection.Instance.Collection)
-                    {
-                        using (IRandomAccessStream randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, "tmpImage.jpg"), item.Left, item.Top, item.IsHyperLink).CloneStream())
-                        {
-                            if (randStream != null)
-                            {
-                                bitmap.SetSource(randStream);
-                            }
-                        }
-
-                        await PPUtils.SaveImage(bitmap, localStorageFile);
-                    }
-
-                    await PPUtils.SaveImage(bitmap, saveItem);
-
-                    await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "SavePicture" });
-                }               
+                await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "SavePicture" });         
             }
             catch (Exception ex)
             {
@@ -569,24 +479,8 @@
             {
                 Guid guid = Guid.NewGuid();
                 string filename = guid + ".jpg";
-                StorageFile localStorageFile = await this.GetStorageFile(true, filename);
 
-                WriteableBitmap bitmap = await this.GenearteWriteableBitmap();
-
-                await PPUtils.SaveImage(bitmap, localStorageFile);
-
-                foreach (TextItem item in TextCollection.Instance.Collection)
-                {
-                    using (IRandomAccessStream randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, filename), item.Left, item.Top, item.IsHyperLink).CloneStream())
-                    {
-                        if (randStream != null)
-                        {
-                            bitmap.SetSource(randStream);
-                        }
-                    }
-
-                    await PPUtils.SaveImage(bitmap, localStorageFile);
-                }
+                PPUtils.SavePicture(this.d2dManager, this.panelcanvas, filename);
 
                 this.Frame.Navigate(typeof(MainPage), "ms-appdata:///local/" + filename);
 
@@ -606,9 +500,9 @@
             }
         }
 
-        private async void LoadTemplateButton_Click(object sender, RoutedEventArgs e)
+        private async void LoadTemplate(string templateName)
         {
-            var json = await PPUtils.ReadFile( "Template");
+            var json = await PPUtils.ReadFile(templateName);
             MemoryStream stream = new MemoryStream((UTF8Encoding.UTF8.GetBytes(json)));
 
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<SerializerComponent>));
@@ -625,41 +519,13 @@
             }
         }
 
-        private async void SaveTemplateButton_Click(object sender, RoutedEventArgs e)
+        private void GenerateTemplateButton_Click(object sender, RoutedEventArgs e)
         {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<SerializerComponent>));
+            GenerateButtonPopUp genearteButtonPopUp = new GenerateButtonPopUp();
 
-            using (MemoryStream stream = new MemoryStream())
-            {
-                IList<SerializerComponent> components = new List<SerializerComponent>();
+            this.TemplateNamePopupcontrol.Child = genearteButtonPopUp;
 
-                foreach (UIElement element in this.panelcanvas.Children)
-                {
-                    Grid grid = element as Grid;
-
-                    Component component = grid.Children.Where(c => c is Component).First() as Component;
-
-                    SerializerComponent serializerComponent = new SerializerComponent(component);
-
-                    Point leftTopPoint = PPUtils.GetActualLeftTop(grid);
-
-                    serializerComponent.Left = leftTopPoint.X;
-                    serializerComponent.Top = leftTopPoint.Y;
-
-                    components.Add(serializerComponent);
-                }
-
-                serializer.WriteObject(stream, components);
-                await stream.FlushAsync();
-
-                stream.Seek(0, SeekOrigin.Begin);
-                StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync("Template", CreationCollisionOption.ReplaceExisting);
-                using (Stream fileStream = await file.OpenStreamForWriteAsync())
-                {
-                    await stream.CopyToAsync(fileStream);
-                    await fileStream.FlushAsync();
-                }
-            }
+            this.TemplateNamePopupcontrol.IsOpen = true;
         }
     }
 }
