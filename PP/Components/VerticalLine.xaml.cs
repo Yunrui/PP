@@ -12,6 +12,7 @@
         {
             this.InitializeComponent();
 
+            this.Line.Y2 *= this.Height / this.MinHeight;
         }
 
         public override void Draw(WriteableBitmap bitmap, int left, int top)

@@ -17,6 +17,8 @@
     using PP.Draw;
     using Windows.Storage.Pickers;
     using WindowsRuntimeComponent1;
+    using Windows.UI.Popups;
+    using PP.Common;
 
     /// <summary>
     /// The general utils class
@@ -49,27 +51,77 @@
             }
         }
 
-        /// <summary>
-        /// Get the left top point of a component. As a component will be surrounded by a grid, so use the grid to calc.
-        /// </summary>
-        /// <param name="grid"></param>
-        /// <returns></returns>
-        public static Point GetActualLeftTop(Grid grid)
+        public static async void SaveTemplate(D2DWraper d2dManager, Canvas panelCanvas, string fileName)
         {
-            Point point = new Point(Canvas.GetLeft(grid), Canvas.GetTop(grid));
+            Exception exception = null;
 
-            TranslateTransform translateTransform = grid.RenderTransform as TranslateTransform;
+            fileName += Constants.SuffixOfTemplateFile;
 
-            if (translateTransform != null)
+            try
             {
-                point.X += (int)translateTransform.X;
-                point.Y += (int)translateTransform.Y;
+                PPUtils.SaveImage(d2dManager, panelCanvas, string.Format("{0}.jpg", fileName));
+
+                PPUtils.SaveTemplateAsMetaData(panelCanvas, fileName);
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
             }
 
-            return point;
+            if (exception != null)
+            {
+                MessageDialog message = new MessageDialog("Failed to save the template. Please retry later.");
+
+                await message.ShowAsync();
+                await Instrumentation.Current.Log(exception, exception.StackTrace);
+            }
         }
 
-        private static async void SaveTemplate(string templateName, Canvas panelCanvas)
+        /// <summary>
+        /// Save a bitmap with the current file name
+        /// </summary>
+        /// <param name="finalPictureStorageFile">null means save to local</param>
+        public static async void SaveImage(D2DWraper d2dManager, Canvas panelCanvas, string localFileName = "")
+        {
+            StorageFile finalPictureStorageFile = null;
+
+            if (string.IsNullOrEmpty(localFileName))
+            {
+                finalPictureStorageFile = await PPUtils.GetStorageFile();
+                localFileName = "tmpImage.jpg";
+            }
+
+            StorageFile localStorageFile = await PPUtils.GetStorageFile(localFileName);
+
+            WriteableBitmap bitmap = await PPUtils.GenearteWriteableBitmap(panelCanvas);
+
+            await PPUtils.SaveImageWithoutText(bitmap, localStorageFile);
+
+            foreach (TextItem item in TextCollection.Instance.Collection)
+            {
+                using (IRandomAccessStream randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, localFileName), item.Left, item.Top, item.IsHyperLink).CloneStream())
+                {
+                    if (randStream != null)
+                    {
+                        bitmap.SetSource(randStream);
+                    }
+                }
+
+                await PPUtils.SaveImageWithoutText(bitmap, localStorageFile);
+            }
+
+            if (finalPictureStorageFile != null)
+            {
+                await PPUtils.SaveImageWithoutText(bitmap, finalPictureStorageFile);
+            }
+        }
+
+        /// <summary>
+        /// Save the template to as the metadata
+        /// </summary>
+        /// <param name="templateName"></param>
+        /// <param name="panelCanvas"></param>
+        private static async void SaveTemplateAsMetaData(Canvas panelCanvas, string templateName)
         {
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<SerializerComponent>));
 
@@ -107,49 +159,10 @@
         }
 
         /// <summary>
-        /// Save a bitmap with the current file name
-        /// </summary>
-        /// <param name="finalPictureStorageFile">null means save to local</param>
-        public static async void SavePicture(D2DWraper d2dManager, Canvas panelCanvas, string localFileName = "")
-        {
-            StorageFile finalPictureStorageFile = null;
-
-            if (string.IsNullOrEmpty(localFileName))
-            {
-                finalPictureStorageFile = await PPUtils.GetStorageFile();
-                localFileName = "tmpImage.jpg";
-            }
-
-            StorageFile localStorageFile = await PPUtils.GetStorageFile(localFileName);
-
-            WriteableBitmap bitmap = await PPUtils.GenearteWriteableBitmap(panelCanvas);
-
-            await PPUtils.SaveImage(bitmap, localStorageFile);
-
-            foreach (TextItem item in TextCollection.Instance.Collection)
-            {
-                using (IRandomAccessStream randStream = d2dManager.DrawTextToImage(item.Context, string.Format("{0}\\{1}", ApplicationData.Current.LocalFolder.Path, localFileName), item.Left, item.Top, item.IsHyperLink).CloneStream())
-                {
-                    if (randStream != null)
-                    {
-                        bitmap.SetSource(randStream);
-                    }
-                }
-
-                await PPUtils.SaveImage(bitmap, localStorageFile);
-            }
-
-            if (finalPictureStorageFile != null)
-            {
-                await PPUtils.SaveImage(bitmap, finalPictureStorageFile);
-            }
-        }
-
-        /// <summary>
         /// Getnerate the writeable bitmap, and register the text.
         /// </summary>
         /// <returns></returns>
-        public static async Task<WriteableBitmap> GenearteWriteableBitmap(Canvas panelCanvas)
+        private static async Task<WriteableBitmap> GenearteWriteableBitmap(Canvas panelCanvas)
         {
             Uri iconImageUri = new Uri(IconImageUri);
             PPUtils.IconBitmap = await new WriteableBitmap(1, 1).FromContent(iconImageUri);
@@ -178,7 +191,7 @@
             return bitmap;
         }
 
-        public async static Task SaveImage(WriteableBitmap src, StorageFile savedItem)
+        private async static Task SaveImageWithoutText(WriteableBitmap src, StorageFile savedItem)
         {
             Exception exception = null;
             try
@@ -252,6 +265,27 @@
             }
 
             return savedItem;
+        }
+
+
+        /// <summary>
+        /// Get the left top point of a component. As a component will be surrounded by a grid, so use the grid to calc.
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <returns></returns>
+        private static Point GetActualLeftTop(Grid grid)
+        {
+            Point point = new Point(Canvas.GetLeft(grid), Canvas.GetTop(grid));
+
+            TranslateTransform translateTransform = grid.RenderTransform as TranslateTransform;
+
+            if (translateTransform != null)
+            {
+                point.X += (int)translateTransform.X;
+                point.Y += (int)translateTransform.Y;
+            }
+
+            return point;
         }
     }
 }

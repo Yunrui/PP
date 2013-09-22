@@ -64,6 +64,8 @@
 
                 this.panelcanvas.Children.Clear();
             }
+
+            this.LoadTemplate(templateName);
         }
 
         private void appBar_Opened(object sender, object e)
@@ -453,7 +455,7 @@
             Exception exception = null;
             try
             {
-                PPUtils.SavePicture(this.d2dManager, this.panelcanvas);
+                PPUtils.SaveImage(this.d2dManager, this.panelcanvas);
 
                 await Instrumentation.Current.Log(new Record() { Event = EventId.Action, CustomA = "SavePicture" });         
             }
@@ -480,7 +482,7 @@
                 Guid guid = Guid.NewGuid();
                 string filename = guid + ".jpg";
 
-                PPUtils.SavePicture(this.d2dManager, this.panelcanvas, filename);
+                PPUtils.SaveImage(this.d2dManager, this.panelcanvas, filename);
 
                 this.Frame.Navigate(typeof(MainPage), "ms-appdata:///local/" + filename);
 
@@ -502,20 +504,23 @@
 
         private async void LoadTemplate(string templateName)
         {
-            var json = await PPUtils.ReadFile(templateName);
-            MemoryStream stream = new MemoryStream((UTF8Encoding.UTF8.GetBytes(json)));
-
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<SerializerComponent>));
-
-            IList<SerializerComponent> components = serializer.ReadObject(stream) as IList<SerializerComponent>;
-
-            this.panelcanvas.Children.Clear();
-
-            foreach (SerializerComponent serializerComponent in components)
+            if (!string.IsNullOrEmpty(templateName))
             {
-                Component compoent = Component.CreateComponent(serializerComponent);
+                var json = await PPUtils.ReadFile(templateName);
+                MemoryStream stream = new MemoryStream((UTF8Encoding.UTF8.GetBytes(json)));
 
-                this.AddComponentToUI(compoent, new Point(compoent.Left, compoent.Top));
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IList<SerializerComponent>));
+
+                IList<SerializerComponent> components = serializer.ReadObject(stream) as IList<SerializerComponent>;
+
+                this.panelcanvas.Children.Clear();
+
+                foreach (SerializerComponent serializerComponent in components)
+                {
+                    Component compoent = Component.CreateComponent(serializerComponent);
+
+                    this.AddComponentToUI(compoent, new Point(compoent.Left, compoent.Top));
+                }
             }
         }
 
@@ -526,6 +531,13 @@
             this.TemplateNamePopupcontrol.Child = genearteButtonPopUp;
 
             this.TemplateNamePopupcontrol.IsOpen = true;
+
+            this.TemplateNamePopupcontrol.Closed += TemplateNamePopupcontrol_Closed;
+        }
+
+        void TemplateNamePopupcontrol_Closed(object sender, object e)
+        {
+            PPUtils.SaveTemplate(d2dManager, this.panelcanvas, (this.TemplateNamePopupcontrol.Child as GenerateButtonPopUp).TemplateName);
         }
     }
 }

@@ -21,5 +21,7 @@ namespace PP.Common
         public const string DefaultCheckBoxContext = "CheckBox";
 
         public const string DeafultComboBoxContext = "ComboBox";
+
+        public const string SuffixOfTemplateFile = "_PP_template";
     }
 }

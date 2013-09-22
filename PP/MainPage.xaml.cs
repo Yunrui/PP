@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PP.Common;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Networking.Connectivity;
+using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -24,11 +26,6 @@ namespace PP
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private string[] _ids =
-        {
-            "1067", "2328", "4357", "4357", "4357", "4357", "4357", "4357", "4357", "4357",
-        };
-
         public MainPage()
         {
             this.InitializeComponent();
@@ -39,24 +36,30 @@ namespace PP
         /// </summary>
         /// <param name="e">Event data that describes how this page was reached.  The Parameter
         /// property is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             var comics = new ObservableCollection<CoverFlowDataSource>();
 
-            foreach (string id in _ids)
+            StorageFolder localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            IReadOnlyList<StorageFile> files = await localFolder.GetFilesAsync();
+
+            foreach (StorageFile file in files)
             {
-                CoverFlowDataSource ds = new CoverFlowDataSource();
-                ds.Description = "Starting with a blank web page";
-                ds.TemplateName = "Template#2";
-                ds.Image = "Assets/WebPage.png";
-                comics.Add(ds);
+                if (file.Name.EndsWith(Constants.SuffixOfTemplateFile))
+                {
+                    CoverFlowDataSource ds = new CoverFlowDataSource();
+                    ds.Description = "Starting with a blank web page";
+                    ds.TemplateName = file.Name;
+                    ds.Image = string.Format("{0}\\{1}.jpg", localFolder.Path, file.Name);
+                    comics.Add(ds);
+                }
             }
+
+            comics.Add(new CoverFlowDataSource() { TemplateName = string.Empty, Image = "Assets/WebPage.png" });
 
             if (null == e.Parameter)
             {
                 var profile = NetworkInformation.GetInternetConnectionProfile();
-
-                CoverFlowControl.ItemsSource = comics;
             }
             else
             {
@@ -66,10 +69,10 @@ namespace PP
                 ds.Description = "Your Current Prototype";
                 ds.Image = tmp;
 
-                comics.Insert(0, ds);
-
-                CoverFlowControl.ItemsSource = comics;
+                comics.Insert(0, ds);             
             }
+
+            CoverFlowControl.ItemsSource = comics;
         }
 
         private async void CoverFlowControl_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)

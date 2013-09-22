@@ -120,6 +120,7 @@
             {
                 component.Width = serivalizerComponent.Width;
                 component.Height = serivalizerComponent.Height;
+                
                 component.Left = serivalizerComponent.Left;
                 component.Top = serivalizerComponent.Top;
 
